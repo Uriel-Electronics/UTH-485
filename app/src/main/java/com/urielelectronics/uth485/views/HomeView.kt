@@ -89,7 +89,7 @@ fun HomeView(viewModel: MyViewModel) {
                 onClick = { /* TODO: 연결 동작 */ },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = (-90).dp)
+                    .offset(y = (-60).dp)
                     .size(width = 280.dp, height = 80.dp),
                 shape = RoundedCornerShape(48.dp),
                 colors = ButtonDefaults.buttonColors(

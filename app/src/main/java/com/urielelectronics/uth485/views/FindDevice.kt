@@ -1,7 +1,6 @@
 package com.urielelectronics.uth485.views
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
@@ -66,7 +65,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import com.urielelectronics.uth485.MainActivity
-import com.urielelectronics.uth485.Manifest
 import com.urielelectronics.uth485.R
 import com.urielelectronics.uth485.ui.theme.Pretendard
 import com.urielelectronics.uth485.ui.theme.UrielBGPaleWhite
@@ -586,9 +584,20 @@ fun sendPacket(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic,
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
+fun requestPowerData(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+    val CHECKSUM: UInt = 175.toUByte() + 21.toUByte()
+    val packet: UByteArray = ubyteArrayOf(175u, 21u, 0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM.toUByte(), 13u, 10u)
+
+    Log.d("REQPWD", packet.contentToString())
+
+    sendPacket(gatt, characteristic, packet)
+//    writeLargeData(gatt, characteristic, packet.asByteArray())
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
 fun requestPasswordData(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-    val CHECKSUM: UInt = 175.toUByte() + 12.toUByte()
-    val packet: UByteArray = ubyteArrayOf(175u, 12u, 0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM.toUByte(), 13u, 10u)
+    val CHECKSUM: UInt = 175.toUByte() + 5.toUByte()
+    val packet: UByteArray = ubyteArrayOf(175u, 5u, 0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM.toUByte(), 13u, 10u)
 
     Log.d("REQPWD", packet.contentToString())
 
