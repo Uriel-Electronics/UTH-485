@@ -125,11 +125,12 @@ fun HomeView(viewModel: MyViewModel) {
     } else if (viewState.value == ViewState.FIND_DEVICE) {
         FindDevice(viewState = viewState, foundDevices = foundDevices, selectedDevice, gatt, characteristic, notifyCharacteristic, mainActivity = MainActivity(), viewModel = viewModel)
     } else if (viewState.value == ViewState.DEVICE_CONNECTED) {
-        Text(text = if (selectedDevice.value == null) "UTH-485" else selectedDevice.value!!.name,
+        // TODO! : 여기서부터 연결된 상태로 진입합니다.
+        Text(text = "연결됨",
             style = TextStyle(
                 fontFamily = Pretendard,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 24.sp,
+                fontSize = 50.sp,
                 color = UrielTextDark
             )
         )
