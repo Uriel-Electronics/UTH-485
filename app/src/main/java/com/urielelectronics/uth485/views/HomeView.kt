@@ -1,7 +1,11 @@
 package com.urielelectronics.uth485.views
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
 import android.media.Image
+import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,11 +41,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.urielelectronics.uth485.MainActivity
 import com.urielelectronics.uth485.R
+import com.urielelectronics.uth485.ui.theme.Pretendard
+import com.urielelectronics.uth485.ui.theme.UrielTextDark
 
 enum class ViewState {
     HOME,
@@ -71,7 +79,11 @@ enum class SidePanel { None, Settings }
 @Composable
 fun HomeView(viewModel: MyViewModel) {
     var viewState: MutableState<ViewState> = remember { mutableStateOf(ViewState.HOME) }
-    var isSettingOpen by remember { mutableStateOf(false) }
+    val foundDevices: MutableState<List<BluetoothDevice>> = remember { mutableStateOf(emptyList()) }
+    val selectedDevice: MutableState<BluetoothDevice?> = remember { mutableStateOf(null) }
+    val characteristic: MutableState<BluetoothGattCharacteristic?> = remember { mutableStateOf(null) }
+    val notifyCharacteristic: MutableState<BluetoothGattCharacteristic?> = remember { mutableStateOf(null) }
+    val gatt: MutableState<BluetoothGatt?> = remember { mutableStateOf(null) }
 
     if (viewState.value == ViewState.HOME) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -86,7 +98,7 @@ fun HomeView(viewModel: MyViewModel) {
 
             // 2. 연결 버튼
             Button(
-                onClick = { /* TODO: 연결 동작 */ },
+                onClick = { viewState.value = ViewState.FIND_DEVICE },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .offset(y = (-60).dp)
@@ -109,114 +121,18 @@ fun HomeView(viewModel: MyViewModel) {
                     modifier = Modifier.size(48.dp)
                 )
             }
-
-            // 3. 설정 아이콘 또는 닫기 아이콘
-            IconButton(
-                onClick = { isSettingOpen = !isSettingOpen },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "설정",
-                    tint = Color.Black,
-                    modifier = Modifier.size(60.dp)
-                )
-            }
-
-            // 4. 설정 사이드바 표시
-            if (isSettingOpen) {
-                SettingsSideBar(
-                    onClose = { isSettingOpen = false },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
         }
-    }
-}
-
-@Composable
-fun SettingsSideBar(
-    onClose: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxHeight()
-            .width(300.dp)
-            .background(Color(0xFFF5F5F5))
-            .zIndex(1f)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            // 상단: 닫기 아이콘 + 메뉴
-            Column {
-                // ❌ 닫기 버튼 (오른쪽 상단)
-                Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-                    IconButton(
-                        onClick = onClose,
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "닫기",
-                            modifier = Modifier.size(36.dp),
-                            tint = Color.Black
-                        )
-                    }
-                }
-
-                // 메뉴 항목들
-                Column(modifier = Modifier.padding(top = 8.dp),verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /* TODO: 단말기 등록 */ },
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("단말기 등록", fontSize = 18.sp)
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = Color.Gray,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /* TODO: 사용자 정보 설정 */ },
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("사용자 정보 설정", fontSize = 18.sp)
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = Color.Gray,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            }
-
-            // 하단: 종료 버튼
-            Button(
-                onClick = { /* TODO: 앱 종료 */ },
-                modifier = Modifier.fillMaxWidth().offset(y = (-60).dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF32363D))
-            ) {
-                Text("종료", color = Color.White)
-            }
-        }
+    } else if (viewState.value == ViewState.FIND_DEVICE) {
+        FindDevice(viewState = viewState, foundDevices = foundDevices, selectedDevice, gatt, characteristic, notifyCharacteristic, mainActivity = MainActivity(), viewModel = viewModel)
+    } else if (viewState.value == ViewState.DEVICE_CONNECTED) {
+        Text(text = if (selectedDevice.value == null) "UTH-485" else selectedDevice.value!!.name,
+            style = TextStyle(
+                fontFamily = Pretendard,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 24.sp,
+                color = UrielTextDark
+            )
+        )
     }
 }
 

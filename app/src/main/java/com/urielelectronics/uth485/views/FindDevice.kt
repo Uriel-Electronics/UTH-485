@@ -70,6 +70,7 @@ import com.urielelectronics.uth485.ui.theme.Pretendard
 import com.urielelectronics.uth485.ui.theme.UrielBGPaleWhite
 import com.urielelectronics.uth485.ui.theme.UrielBGWhite
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
+import com.urielelectronics.uth485.ui.theme.UrielTextLight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
@@ -197,8 +198,8 @@ fun FindDevice(viewState: MutableState<ViewState>, foundDevices: MutableState<Li
                     CoroutineScope(Main).launch {
                         try {
                             delay(1000)
-//                            requestPasswordData(gatt, characteristic)
-//                            delay(1200)
+                            requestPasswordData(gatt, characteristic)
+                            delay(1200)
                             selectedGatt.value = gatt
                             selectedCharacteristic.value = characteristic
                         } finally {
@@ -371,7 +372,7 @@ fun FindDevice(viewState: MutableState<ViewState>, foundDevices: MutableState<Li
                                                     fontFamily = Pretendard,
                                                     fontWeight = FontWeight.SemiBold,
                                                     fontSize = 20.sp,
-                                                    color = UrielTextDark
+                                                    color = UrielTextLight
                                                 ),
                                                 modifier = Modifier
                                                     .align(Alignment.Center)
@@ -423,7 +424,6 @@ fun FindDevice(viewState: MutableState<ViewState>, foundDevices: MutableState<Li
                                     }
                                 }
                             }
-
                         }
                     }
                 }
