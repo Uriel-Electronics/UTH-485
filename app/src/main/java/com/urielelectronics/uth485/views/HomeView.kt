@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +33,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -53,6 +56,7 @@ import com.urielelectronics.uth485.MainActivity
 import com.urielelectronics.uth485.R
 import com.urielelectronics.uth485.ui.theme.UrielBGWhite
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
+import com.urielelectronics.uth485.ui.theme.UrielTextGray
 import com.urielelectronics.uth485.ui.theme.UrielTextLight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -224,16 +228,22 @@ fun HomeView(viewModel: MyViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .background(UrielBGWhite),
+                    .background(UrielBGWhite)
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = dateText,
                     color = UrielTextDark,
-                    modifier = Modifier.padding(8.dp))
+                    modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp))
+                VerticalDivider(
+                    color = UrielTextGray,
+                    modifier = Modifier
+                        .height(20.dp)
+                        .padding(vertical = 4.dp, horizontal = 16.dp))
                 Text(text = timeText,
                     color = UrielTextDark,
-                    modifier = Modifier.padding(8.dp))
+                    modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp))
             }
 
 
@@ -244,33 +254,43 @@ fun HomeView(viewModel: MyViewModel) {
     }
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
 //        DeviceDefaultSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_EACH_SETTING) {
 //        DeviceTempEachSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING) {
 //        DeviceTempGroupSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_ALL_SETTING) {
 //        DeviceTempAllSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
 //        DeviceTimeSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
 //        DeviceStatusView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_ERROR_STATUS) {
 //        DeviceErrorStatusView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GRAPH) {
 //        DeviceTempGraphView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_PW_SETTING) {
 //        DevicePWSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
     else if (viewState.value == ViewState.DEVICE_LOGIN) {
 //        DeviceLoginView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState)
     }
 }
 
@@ -296,13 +316,15 @@ fun HeaderDropdown(
         Text(
             text = title,
             modifier = Modifier
-                .padding(20.dp)
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(Color(0xFFdc7c6c))
+                .background(Color(0xFFD96C59))
                 .padding(0.dp),
         ) {
             Column(
@@ -324,8 +346,10 @@ fun HeaderDropdown(
                                 color = UrielTextLight,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                textAlign = TextAlign.Center
+                                    .padding(vertical = 4.dp),
+                                textAlign = TextAlign.Center,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
                             )
                         },
                     )
