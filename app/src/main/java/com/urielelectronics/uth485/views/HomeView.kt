@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.urielelectronics.uth485.MainActivity
 import com.urielelectronics.uth485.R
+import com.urielelectronics.uth485.ui.theme.UrielBGOrange
+import com.urielelectronics.uth485.ui.theme.UrielBGRed
 import com.urielelectronics.uth485.ui.theme.UrielBGWhite
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
 import com.urielelectronics.uth485.ui.theme.UrielTextGray
@@ -201,7 +203,8 @@ fun HomeView(viewModel: MyViewModel) {
                         /* TODO: exit */
                         onSelect = arrayOf({ viewState.value = ViewState.HOME })
                     )
-                })
+                },
+                viewState)
 
 
 
@@ -250,47 +253,47 @@ fun HomeView(viewModel: MyViewModel) {
         }
     }
     else if (viewState.value == ViewState.DEVICE_REGISTER) {
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
 //        DeviceDefaultSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_EACH_SETTING) {
 //        DeviceTempEachSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING) {
 //        DeviceTempGroupSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_ALL_SETTING) {
 //        DeviceTempAllSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
 //        DeviceTimeSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
 //        DeviceStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_ERROR_STATUS) {
 //        DeviceErrorStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GRAPH) {
 //        DeviceTempGraphView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_PW_SETTING) {
 //        DevicePWSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_LOGIN) {
 //        DeviceLoginView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
 }
 
@@ -324,7 +327,7 @@ fun HeaderDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(Color(0xFFD96C59))
+                .background(UrielBGOrange)
                 .padding(0.dp),
         ) {
             Column(
@@ -355,7 +358,7 @@ fun HeaderDropdown(
                     )
                     if(idx < items.lastIndex){
                         HorizontalDivider(
-                            color = Color(0xFFD74731),
+                            color = UrielBGRed,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)
                         )
