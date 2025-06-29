@@ -256,8 +256,7 @@ fun HomeView(viewModel: MyViewModel) {
         DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
-//        DeviceDefaultSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        PasswordSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_EACH_SETTING) {
 //        DeviceTempEachSettingView(viewState = viewState)

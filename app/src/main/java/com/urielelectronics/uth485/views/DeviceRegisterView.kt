@@ -208,10 +208,10 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                         // 2. 저장 버튼
                         Button(
                             onClick = {
-                                //TODO - viewModel.devieNumber 업데이트
                                 viewModel.deviceNumber = deviceCount
 
-                                //TODO - popup 띄우기
+                                //TODO - viewModel.group, devices 업데이트
+
                                 showSavePopUp.value = true
                             },
                             modifier = Modifier
