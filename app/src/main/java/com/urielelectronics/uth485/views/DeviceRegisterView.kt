@@ -1,13 +1,9 @@
 package com.urielelectronics.uth485.views
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Context
-import android.widget.TableLayout
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,35 +14,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -59,25 +39,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.urielelectronics.uth485.R.drawable.check_circle
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige
-import com.urielelectronics.uth485.ui.theme.UrielBGOrange
-import com.urielelectronics.uth485.ui.theme.UrielBGPaleWhite
 import com.urielelectronics.uth485.ui.theme.UrielBGWhite
-import com.urielelectronics.uth485.ui.theme.UrielButtonOrange
-import com.urielelectronics.uth485.ui.theme.UrielHeaderGray
+import com.urielelectronics.uth485.ui.theme.UrielOrange
 import com.urielelectronics.uth485.ui.theme.UrielTableHeaderGray
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
 import com.urielelectronics.uth485.ui.theme.UrielTextGray
-import com.urielelectronics.uth485.ui.theme.UrielTextLight
 import com.urielelectronics.uth485.ui.theme.UrielTextOrange
+import com.urielelectronics.uth485.views.components.Header
+import com.urielelectronics.uth485.views.components.NumberSelector
+import com.urielelectronics.uth485.views.components.Popup
+import com.urielelectronics.uth485.views.components.SaveButton
 
 
 class Device(var id: Int, var name: String, var group: Int)
@@ -206,48 +184,28 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                         )
 
                         // 2. 저장 버튼
-                        Button(
-                            onClick = {
+                        SaveButton(
+                            onButtonClick = {
                                 viewModel.deviceNumber = deviceCount
-
                                 //TODO - viewModel.group, devices 업데이트
-
                                 showSavePopUp.value = true
                             },
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            shape = RoundedCornerShape(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = UrielButtonOrange
-                            )
-                        ) {
-                            Text(
-                                text = "저장",
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = UrielTextLight,
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.Default.CheckCircle,
-                                contentDescription = "saveIcon",
-                                tint = UrielTextLight,
-                                modifier = Modifier
-                                    .size(64.dp)
-                                    .padding(horizontal = 8.dp)
-                            )
-                        }
+                            text = "저장",
+                            backgroundColor = UrielOrange,
+                            icon = ImageVector.vectorResource(id = check_circle)
+                        )
                         if(showSavePopUp.value) {
                             Popup(
                                 title = "단말기 등록",
-                                content = { Text(
-                                    text = "저장이 완료되었습니다.",
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 16.sp
-                                ) },
+                                content = {
+                                    Text(
+                                        text = "저장이 완료되었습니다.",
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp
+                                    )
+                                },
                                 confirmText = "확인",
-                                type= "alarm",
+                                type = "alarm",
                                 onConfirm = { showSavePopUp.value = false },
                                 onDismiss = { showSavePopUp.value = false }
                             )
@@ -290,108 +248,7 @@ fun IconAndText(text : String) {
     }
 }
 
-@Composable
-fun NumberSelector(
-    value: Int,
-    onValueChange: (Int) -> Unit,
-    min : Int,
-    max : Int = -1
-) {
 
-    Row (
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .height(60.dp),
-    ) {
-        // 1) 숫자 필드
-        OutlinedTextField(
-            value = value.toString(),
-            onValueChange = { new ->
-                new.toIntOrNull()?.let { v ->
-                    if(max >= 0) {
-                        onValueChange(v.coerceIn(min..max))
-                    }
-                    else {
-                        onValueChange(v.coerceAtLeast(min))
-                    }
-                }
-            },
-            singleLine = true,
-            modifier = Modifier
-                .width(180.dp)
-                .height(60.dp),
-            textStyle = LocalTextStyle.current.copy(
-                fontSize = 24.sp
-            )
-        )
-        // 2) 위/아래 버튼
-        Column(
-            modifier = Modifier
-                .padding(end = 4.dp)
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(60.dp)
-                    .height(24.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                UrielButtonOrange,
-                                UrielBGOrange
-                            )
-                        )
-                    )
-                    .clickable {
-                        if(max >= 0) {
-                            val next = (value + 1).coerceAtMost(max)
-                            onValueChange(next)
-                        }
-                        else {
-                            val next = (value + 1)
-                            onValueChange(next)
-                        }
-                    }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowUp,
-                    contentDescription = "증가",
-                    tint = UrielTextLight,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .width(60.dp)
-                    .height(24.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                UrielButtonOrange,
-                                UrielBGOrange
-                            )
-                        )
-                    )
-                    .clickable {
-                        val prev = (value - 1).coerceAtLeast(min)
-                        onValueChange(prev)
-                    }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowDown,
-                    contentDescription = "감소",
-                    tint = UrielTextLight,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-        }
-    }
-}
 
 
 @OptIn(ExperimentalFoundationApi::class)
