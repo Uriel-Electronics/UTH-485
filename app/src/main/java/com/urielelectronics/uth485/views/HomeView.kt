@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
-import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -45,11 +41,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.urielelectronics.uth485.MainActivity
@@ -60,6 +54,7 @@ import com.urielelectronics.uth485.ui.theme.UrielBGWhite
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
 import com.urielelectronics.uth485.ui.theme.UrielTextGray
 import com.urielelectronics.uth485.ui.theme.UrielTextLight
+import com.urielelectronics.uth485.views.components.Header
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
@@ -152,7 +147,8 @@ fun HomeView(viewModel: MyViewModel) {
                 modifier = Modifier.fillMaxSize()
             )
 
-            Header("LandingView",
+            Header(
+                "LandingView",
                 {
                     Image(
                         painter = painterResource(id = R.drawable.logo_splash_black),
@@ -204,7 +200,8 @@ fun HomeView(viewModel: MyViewModel) {
                         onSelect = arrayOf({ viewState.value = ViewState.HOME })
                     )
                 },
-                viewState)
+                viewState
+            )
 
 
 
@@ -256,7 +253,8 @@ fun HomeView(viewModel: MyViewModel) {
         DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
-        PasswordSettingView(viewState = viewState, viewModel = viewModel)
+//        DeviceTempEachSettingView(viewState = viewState)
+        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_EACH_SETTING) {
 //        DeviceTempEachSettingView(viewState = viewState)
@@ -287,8 +285,7 @@ fun HomeView(viewModel: MyViewModel) {
         DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_PW_SETTING) {
-//        DevicePWSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        PasswordSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_LOGIN) {
 //        DeviceLoginView(viewState = viewState)

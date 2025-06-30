@@ -1,5 +1,4 @@
-package com.urielelectronics.uth485.views
-
+package com.urielelectronics.uth485.views.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.urielelectronics.uth485.ui.theme.UrielHeaderGray
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
+import com.urielelectronics.uth485.views.ViewState
 
 /** header **/
 @Composable

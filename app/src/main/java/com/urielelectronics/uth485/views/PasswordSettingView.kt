@@ -1,6 +1,5 @@
 package com.urielelectronics.uth485.views
 
-import androidx.compose.foundation.R
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,31 +7,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,20 +39,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige2
-import com.urielelectronics.uth485.ui.theme.UrielBGOrange
 import com.urielelectronics.uth485.ui.theme.UrielBGWhite
-import com.urielelectronics.uth485.ui.theme.UrielButtonOrange
 import com.urielelectronics.uth485.ui.theme.UrielTextDark
 import com.urielelectronics.uth485.ui.theme.UrielTextGray
-import com.urielelectronics.uth485.ui.theme.UrielTextLight
-import com.urielelectronics.uth485.R.drawable.visibility_off_24px
-import com.urielelectronics.uth485.R.drawable.visibility_24px
+import com.urielelectronics.uth485.R.drawable.visibility_off
+import com.urielelectronics.uth485.R.drawable.visibility_on
+import com.urielelectronics.uth485.R.drawable.check_circle
+import com.urielelectronics.uth485.ui.theme.UrielOrange
+import com.urielelectronics.uth485.views.components.Header
+import com.urielelectronics.uth485.views.components.Popup
+import com.urielelectronics.uth485.views.components.SaveButton
+
+const val CLOSE = 0
+const val FAILURE = 1
+const val SUCCESS = 2
 
 @Composable
 fun PasswordSettingView(viewState: MutableState<ViewState>, viewModel: MyViewModel) {
     var newPassword by remember { mutableStateOf("") }
     var newPasswordCheck by remember { mutableStateOf("") }
-    var showSavePopUp = remember { mutableStateOf(false) }
+    var showSavePopUp = remember { mutableStateOf(CLOSE) }
 
 
     Scaffold (
@@ -123,65 +117,42 @@ fun PasswordSettingView(viewState: MutableState<ViewState>, viewModel: MyViewMod
                             onPasswordChange = { newPasswordCheck = it }
                         )
 
+                        Spacer(
+                            Modifier.height(36.dp)
+                        )
+
                         // 2. 저장 버튼
-                        Button(
-                            onClick = {
+
+                        SaveButton(
+                            onButtonClick = {
+                                showSavePopUp.value = FAILURE
                                 if(newPassword == newPasswordCheck) {
-                                    //TODO - user password 업데이트
+                                    // if (TODO - 조건 추가 (최소길이, 특수문자, 대소문자 등등))
+                                        showSavePopUp.value = SUCCESS
+                                        // TODO - user password 업데이트
                                 }
-                                showSavePopUp.value = true
                             },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(vertical = 36.dp),
-                            shape = RoundedCornerShape(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = UrielButtonOrange
-                            )
-                        ) {
-                            Text(
-                                text = "저장",
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = UrielTextLight,
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                            )
-                            Icon(
-                                imageVector = Icons.Default.CheckCircle,
-                                contentDescription = "saveIcon",
-                                tint = UrielTextLight,
-                                modifier = Modifier
-                                    .size(64.dp)
-                                    .padding(horizontal = 8.dp)
-                            )
-                        }
-                        if(showSavePopUp.value && newPassword == newPasswordCheck) {
+                            text = "저장",
+                            backgroundColor = UrielOrange,
+                            icon = ImageVector.vectorResource(id = check_circle)
+                        )
+
+                        if(showSavePopUp.value != CLOSE) {
                             Popup(
                                 title = "사용자 정보 설정",
-                                content = { Text(
-                                    text = "저장이 완료되었습니다.",
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 16.sp
-                                ) },
+                                content = {
+                                    Text(
+                                        text =
+                                            if (showSavePopUp.value == SUCCESS) "저장이 완료되었습니다."
+                                            else "비밀번호를 다시 확인해주세요.",
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp
+                                    )
+                                },
                                 confirmText = "확인",
-                                type= "alarm",
-                                onConfirm = { showSavePopUp.value = false },
-                                onDismiss = { showSavePopUp.value = false }
-                            )
-                        }
-                        else if(showSavePopUp.value && newPassword != newPasswordCheck) {
-                            Popup(
-                                title = "사용자 정보 설정",
-                                content = { Text(
-                                    text = "비밀번호가 다릅니다.",
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 16.sp
-                                ) },
-                                confirmText = "확인",
-                                type= "alarm",
-                                onConfirm = { showSavePopUp.value = false },
-                                onDismiss = { showSavePopUp.value = false }
+                                type = "alarm",
+                                onConfirm = { showSavePopUp.value = CLOSE },
+                                onDismiss = { showSavePopUp.value = CLOSE }
                             )
                         }
                     }
@@ -250,8 +221,8 @@ fun PasswordInputField(
             trailingIcon = {
                 IconButton(onClick = {visibility.value = !visibility.value}) {
                     Icon(
-                        imageVector = if (visibility.value) ImageVector.vectorResource(id = visibility_off_24px)
-                        else ImageVector.vectorResource(id = visibility_24px),
+                        imageVector = if (visibility.value) ImageVector.vectorResource(id = visibility_off)
+                        else ImageVector.vectorResource(id = visibility_on),
                         contentDescription = "토글 비밀번호 표시"
                     )
                 }
