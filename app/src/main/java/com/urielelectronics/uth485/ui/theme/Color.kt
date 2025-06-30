@@ -14,6 +14,8 @@ val UrielBGWhite = Color(0xFFFAFCFF)
 val UrielBGPaleWhite = Color(0xFFEDF1F5)
 val UrielBGBeige = Color(0xFFf7f6f4)
 
+var UrielBGBeige2 = Color(0xFFf3f1ed)
+
 val UrielTextLight = Color(0xFFFAFCFF)
 val UrielTextDark = Color(0xFF202327)
 val UrielTextGray = Color(0xFF909193)
