@@ -131,8 +131,10 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
     var fisrtTime = remember { mutableStateOf(viewModel.fisrtTime.toString())} // 초기투입시간
     var step = remember { mutableIntStateOf(viewModel.step)} // 시간단계
 
-    var errMsgOn = remember { mutableStateOf<Boolean>(true) }
-    var errMsgFrequency = remember { mutableIntStateOf(5) }
+    var tempErrMsgOn = remember { mutableStateOf<Boolean>(true) }
+    var tempErrMsgFrequency = remember { mutableIntStateOf(5) }
+    var timeErrMsgOn = remember { mutableStateOf<Boolean>(true) }
+    var timeErrMsgFrequency = remember { mutableIntStateOf(5) }
     val errMsgFrequencyOptions = listOf<Int>(5, 10, 15, 30, 50, 60)
 
     Scaffold (
@@ -336,14 +338,19 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                     // 3. 에러메세지 발생 주기
                     EditSettingBox(
                         titles = listOf("에러메세지", "발생주기"),
-                        contents = listOf(
+                        contents =
+                            listOf(
                             {
                                     // 켜짐 / 꺼짐 버튼
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Box(
                                             Modifier
                                                 .background(
-                                                    color = if (errMsgOn.value) UrielBGDarkGray else UrielBGWhite,
+                                                    color =
+                                                        if ((settingMode.value == SettingMode.TempModeSetting && tempErrMsgOn.value) ||
+                                                            (settingMode.value == SettingMode.TimeModeSetting && timeErrMsgOn.value))
+                                                            UrielBGDarkGray
+                                                        else UrielBGWhite,
                                                     shape = CircleShape
                                                 )
                                                 .clip(CircleShape)
@@ -352,12 +359,15 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                                     color = UrielBorderGray,
                                                     shape = CircleShape
                                                 )
-                                                .clickable(onClick = { errMsgOn.value = true })
+                                                .clickable(onClick = {
+                                                    if(settingMode.value == SettingMode.TempModeSetting) tempErrMsgOn.value = true
+                                                    else if (settingMode.value == SettingMode.TimeModeSetting) timeErrMsgOn.value = true})
                                                 .size(36.dp),
                                             contentAlignment = Alignment.Center
 
                                         ){
-                                            if(errMsgOn.value) {
+                                            if ((settingMode.value == SettingMode.TempModeSetting && tempErrMsgOn.value) ||
+                                                (settingMode.value == SettingMode.TimeModeSetting && timeErrMsgOn.value)) {
                                                 Icon(
                                                     imageVector = Icons.Default.Check,
                                                 contentDescription = "켜짐",
@@ -377,7 +387,8 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                         Box(
                                             Modifier
                                                 .background(
-                                                    color = if (!errMsgOn.value) UrielBGDarkGray else UrielBGWhite,
+                                                    color = if ((settingMode.value == SettingMode.TempModeSetting && !tempErrMsgOn.value) ||
+                                                        (settingMode.value == SettingMode.TimeModeSetting && !timeErrMsgOn.value)) UrielBGDarkGray else UrielBGWhite,
                                                     shape = CircleShape
                                                 )
                                                 .clip(CircleShape)
@@ -386,11 +397,14 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                                     color = UrielBorderGray,
                                                     shape = CircleShape
                                                 )
-                                                .clickable(onClick = { errMsgOn.value = false })
+                                                .clickable(onClick = {
+                                                    if(settingMode.value == SettingMode.TempModeSetting) tempErrMsgOn.value = false
+                                                    else if (settingMode.value == SettingMode.TimeModeSetting) timeErrMsgOn.value = false })
                                                 .size(36.dp),
                                             contentAlignment = Alignment.Center
                                             ){
-                                            if(!errMsgOn.value) {
+                                            if ((settingMode.value == SettingMode.TempModeSetting && !tempErrMsgOn.value) ||
+                                                (settingMode.value == SettingMode.TimeModeSetting && !timeErrMsgOn.value)) {
                                                 Icon(
                                                     imageVector = Icons.Default.Check,
                                                     contentDescription = "꺼짐",
@@ -409,8 +423,13 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                     // "n분 마다" 드롭다운
                                     FrequencyDropdown(
                                         options = errMsgFrequencyOptions,
-                                        selectedOption= errMsgFrequency.value,
-                                        onOptionSelected= { errMsgFrequency.value = it },
+                                        selectedOption=
+                                            if(settingMode.value == SettingMode.TempModeSetting) tempErrMsgFrequency.intValue
+                                            else timeErrMsgFrequency.intValue
+                                        ,
+                                        onOptionSelected= {
+                                            if(settingMode.value == SettingMode.TempModeSetting) tempErrMsgFrequency.intValue = it
+                                            else timeErrMsgFrequency.intValue = it },
                                         modifier = Modifier.width(128.dp)
                                     )
 
