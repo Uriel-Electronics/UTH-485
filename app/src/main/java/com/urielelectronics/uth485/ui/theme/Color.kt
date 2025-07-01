@@ -30,6 +30,8 @@ val UrielGradientDarkOrange = Color(0xFFde7a66)
 
 val UrielHeaderGray = Color(0xFFf8f4ec)
 val UrielTableHeaderGray = Color(0xFFf4f4f1)
+val UrielBorderGray = Color(0xFFd2d2d2)
+val UrielBGDarkGray = Color(0xFF464a53)
 
 val UrielBGBeige = Color(0xFFf7f6f4)
 var UrielBGBeige2 = Color(0xFFf3f1ed)
