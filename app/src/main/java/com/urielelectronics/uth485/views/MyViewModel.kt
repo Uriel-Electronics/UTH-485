@@ -1,15 +1,27 @@
 package com.urielelectronics.uth485.views
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+
+
+data class Device(
+    var id: Int,
+    var name: String,
+    var group: Int,
+    var settingTemp : Int = 30,
+    var isLocked : Boolean = false,
+    var powerOn : Boolean = false
+)
 
 class MyViewModel: ViewModel() {
     var isConnectLoading = mutableStateOf(false)
 
     // 0xAF
-    var deviceNumber by mutableStateOf(0) // 단말기 수
+    var deviceNumber by mutableStateOf(13/* TODO - 0으로 지워야함*/) // 단말기 수
     var password1 by mutableStateOf(0)
     var password2 by mutableStateOf(0)
     var password3 by mutableStateOf(0)
@@ -31,4 +43,33 @@ class MyViewModel: ViewModel() {
     var settingTemp by mutableStateOf(0) // 설정온도
     var step by mutableStateOf(0) // 시간단계
 
+    // --- TODO - 추가된 전역 변수들 ---
+    var groupCount by mutableIntStateOf(3) // 그룹 수
+    val initialDeviceList = listOf<Device>(
+        Device(1, "101호 특실", 1),
+        Device(2, "102호", 1),
+        Device(3, "103호", 2),
+        Device(4, "104호", 2),
+        Device(5, "105호", 3),
+        Device(6, "106호", 1),
+        Device(7, "107호", 3),
+        Device(8, "108호", 2),
+        Device(9, "109호", 2),
+        Device(10, "110호", 1),
+        Device(11, "111호", 3),
+        Device(12, "112호", 1),
+        Device(13, "113호", 3),
+    )
+    var deviceList = mutableStateListOf<Device>().apply {
+        addAll(initialDeviceList)
+    } // 단말기 리스트
+    fun updateDeviceList(newDeviceList : List<Device>) {
+        deviceList.clear()
+        deviceList.addAll(newDeviceList)
+    } // 단말기 리스트 전체 업데이트 메서드
+    fun updateDeviceAt(index : Int, newDevice : Device) {
+        deviceList[index] = newDevice
+    } // 단말기 업데이트 메서드
+    var currentTemp by mutableStateOf(28) // 현재 온도
+    // --- TODO ---
 }

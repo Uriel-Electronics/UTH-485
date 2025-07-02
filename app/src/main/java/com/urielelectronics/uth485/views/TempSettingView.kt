@@ -31,9 +31,11 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,23 +66,16 @@ import com.urielelectronics.uth485.ui.theme.UrielTextDark
 import com.urielelectronics.uth485.ui.theme.UrielTextLight
 import com.urielelectronics.uth485.views.components.Header
 
-class tempDevice(
-    var id: Int,
-    var name: String,
-    var group: Int,
-    var settingTemp : Int? = 30,
-    var currentTemp : Int? = 28
-)
 
 enum class DeviceTempCardTheme {
     Filled,
     Outlined
 } // DeviceTemperatureCard()에서 theme = DeviceTempCardTheme.Filled / Outlined -> 원하는 테마로 사용 가능
 
-fun List<tempDevice>.padToTen() : List<tempDevice> {
-    val m = this.toMutableList()
+fun List<Device>.padToTen() : List<Device> {
+    var m = this.toMutableList()
     while(m.size % 10 != 0) {
-        m.add(tempDevice(0, "", 0))
+        m.add(Device(0, "", 0))
     }
     return m
 }
@@ -88,36 +83,16 @@ fun List<tempDevice>.padToTen() : List<tempDevice> {
 @Composable
 fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel) {
     var page = remember { mutableIntStateOf(0) }
-    var deviceList = listOf(
-        tempDevice(1, "101호 특실", 1),
-        tempDevice(2, "102호", 2),
-        tempDevice(3, "103호", 1),
-        tempDevice(4, "104호", 1),
-        tempDevice(5, "105호", 2),
-        tempDevice(6, "106호", 2),
-        tempDevice(7, "107호", 3),
-        tempDevice(8, "108호", 3),
-        tempDevice(9, "109호", 2),
-        tempDevice(10, "110호", 3),
-        tempDevice(11, "111호", 3),
-        tempDevice(12, "112호", 2),
-        tempDevice(13, "113호", 1),
-        tempDevice(14, "114호", 3),
-        tempDevice(15, "115호", 2),
-        tempDevice(16, "116호", 1),
-        tempDevice(17, "117호", 1),
-    )
-
+    var deviceList = viewModel.deviceList
     var gridList = deviceList.padToTen()
-    var selectedDevice = remember {mutableStateOf<tempDevice>(
-        tempDevice(0, "", 0))}
+    var selectedDeviceId by remember {mutableStateOf<Int>(0)}
 
 
 
 
 
     if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
-        DeviceTempSettingView(viewState, viewModel, selectedDevice.value)
+        DeviceTempSettingView(viewState, viewModel, selectedDeviceId)
     }
     else {
         Scaffold (
@@ -157,9 +132,12 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
                                 if(device.id != 0) {
                                     DeviceTemperatureCard(
                                         title = device.name,
-                                        onCardClicked = { viewState.value = ViewState.DEVICE_TEMP_DEVICE_SETTING; selectedDevice.value = device },
-                                        settingTemp = device.settingTemp ?: 30,
-                                        currentTemp = device.currentTemp ?: 30,
+                                        onCardClicked = {
+                                            selectedDeviceId = device.id
+                                            viewState.value = ViewState.DEVICE_TEMP_DEVICE_SETTING
+                                        },
+                                        settingTemp = device.settingTemp,
+                                        currentTemp = viewModel.currentTemp,
                                         theme = DeviceTempCardTheme.Filled
                                     )
                                 }
@@ -185,9 +163,12 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
                                 if(device.id != 0) {
                                     DeviceTemperatureCard(
                                         title = device.name,
-                                        onCardClicked = { viewState.value = ViewState.DEVICE_TEMP_DEVICE_SETTING; selectedDevice.value = device },
-                                        settingTemp = device.settingTemp ?: 30,
-                                        currentTemp = device.currentTemp ?: 30,
+                                        onCardClicked = {
+                                            selectedDeviceId = device.id
+                                            viewState.value = ViewState.DEVICE_TEMP_DEVICE_SETTING;
+                                        },
+                                        settingTemp = device.settingTemp,
+                                        currentTemp = viewModel.currentTemp,
                                         theme = DeviceTempCardTheme.Filled
                                     )
                                 }
