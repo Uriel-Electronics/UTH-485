@@ -71,8 +71,8 @@ enum class ViewState {
 
     DEVICE_DEFAULT_SETTING,
     DEVICE_TEMP_SETTING,
-    DEVICE_TEMP_EACH_SETTING,
-    DEVICE_TEMP_ALL_SETTING,
+    DEVICE_TEMP_DEVICE_SETTING,
+    DEVICE_TEMP_GLOBAL_SETTING,
     DEVICE_TEMP_GROUP_SETTING,
     DEVICE_TIME_SETTING,
     DEVICE_STATUS,
@@ -169,9 +169,8 @@ fun HomeView(viewModel: MyViewModel) {
                         "온도 제어",
                         onSelect = arrayOf(
                             { viewState.value = ViewState.DEVICE_TEMP_SETTING },
-                            { viewState.value = ViewState.DEVICE_TEMP_EACH_SETTING },
                             { viewState.value = ViewState.DEVICE_TEMP_GROUP_SETTING },
-                            { viewState.value = ViewState.DEVICE_TEMP_ALL_SETTING }
+                            { viewState.value = ViewState.DEVICE_TEMP_GLOBAL_SETTING }
                         ),
                         arrayOf("개별 제어", "그룹 제어", "전체 제어")
                     )
@@ -254,29 +253,24 @@ fun HomeView(viewModel: MyViewModel) {
         DeviceRegisterView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
-//        DeviceTempEachSettingView(viewState = viewState)
         DeviceDefaultSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_SETTING) {
-//        DeviceTempSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+    else if (viewState.value == ViewState.DEVICE_TEMP_SETTING || viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
+        TempSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_EACH_SETTING) {
-//        DeviceTempEachSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+//    else if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
+//        DeviceTempSettingView(viewState = viewState, viewModel = viewModel)
+//    }
+    else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING || viewState.value == ViewState.DEVICE_TIME_SETTING) {
+        GroupTempSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING) {
-//        DeviceTempGroupSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+    else if (viewState.value == ViewState.DEVICE_TEMP_GLOBAL_SETTING) {
+        GlobalTempSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_ALL_SETTING) {
-//        DeviceTempAllSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
-    }
-    else if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
-//        DeviceTimeSettingView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
-    }
+//    else if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
+////        DeviceTimeSettingView(viewState = viewState)
+//        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+//    }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
 //        DeviceStatusView(viewState = viewState)
         DeviceRegisterView(viewState = viewState, viewModel = viewModel)
@@ -312,7 +306,9 @@ fun HeaderDropdown(
             .clickable {
                 expanded = true
                 /* 메뉴 클릭 처리 */
-                onSelect[0]()
+                if(items.isEmpty()){
+                    onSelect[0]()
+                }
             }
     ) {
         Text(
@@ -339,7 +335,7 @@ fun HeaderDropdown(
                         onClick = {
                             expanded = false
                             /* 세부 메뉴 클릭 처리 */
-                            onSelect[idx+1]()
+                            onSelect[idx]()
                         },
                         contentPadding = PaddingValues(0.dp),
                         text = {

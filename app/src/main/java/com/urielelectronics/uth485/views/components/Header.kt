@@ -28,7 +28,9 @@ import com.urielelectronics.uth485.views.ViewState
 fun Header(title : String,
            content: @Composable RowScope.() -> Unit,
            viewState: MutableState<ViewState>,
-           isBack : Boolean = false) {
+           isBack : Boolean = false,
+           goBackTo : ViewState = ViewState.DEVICE_CONNECTED
+) {
 
     Row(
         modifier = Modifier
@@ -39,7 +41,7 @@ fun Header(title : String,
     ) {
         /** For other views with header **/
         if (isBack) {
-            Back(viewState)
+            Back(viewState, goBackTo)
             Text(
                 text = "UTH-485RC $title",
                 modifier = Modifier
@@ -58,11 +60,11 @@ fun Header(title : String,
 
 /** 뒤로 가기 **/
 @Composable
-fun Back(viewState: MutableState<ViewState>) {
+fun Back(viewState: MutableState<ViewState>, goBackTo : ViewState) {
     IconButton(
         onClick = {
             /** viewState 로 화면을 전환하고 있어 강제로 viewState를 이전으로 되돌려서 뒤로가기 구현 **/
-            viewState.value = ViewState.DEVICE_CONNECTED
+            viewState.value = goBackTo
         }
     ){
         Icon(
