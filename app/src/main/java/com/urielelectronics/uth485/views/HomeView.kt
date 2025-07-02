@@ -126,7 +126,7 @@ fun HomeView(viewModel: MyViewModel) {
         FindDevice(viewState = viewState, foundDevices = foundDevices, selectedDevice, gatt, characteristic, notifyCharacteristic, mainActivity = MainActivity(), viewModel = viewModel)
     } else if (viewState.value == ViewState.DEVICE_CONNECTED) {
         // TODO! : 여기서부터 연결된 상태로 진입합니다.
-        Text(text = "연결됨",
+        Text(text = "연결된 단말기의 수 : ${viewModel.deviceCount}",
             style = TextStyle(
                 fontFamily = Pretendard,
                 fontWeight = FontWeight.SemiBold,
@@ -134,6 +134,7 @@ fun HomeView(viewModel: MyViewModel) {
                 color = UrielTextDark
             )
         )
+
     }
 }
 

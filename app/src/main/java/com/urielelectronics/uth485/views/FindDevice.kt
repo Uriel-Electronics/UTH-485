@@ -407,7 +407,7 @@ fun FindDevice(viewState: MutableState<ViewState>, foundDevices: MutableState<Li
                                                                 delay(1000)
                                                                 requestPowerData(selectedGatt.value!!, selectedCharacteristic.value!!)
                                                                 delay(1200)
-
+                                                                requestDeviceCountData(selectedGatt.value!!, selectedCharacteristic.value!!)
                                                                 viewState.value = ViewState.DEVICE_CONNECTED
                                                             } finally {
                                                                 viewModel.isConnectLoading.value = false
@@ -603,6 +603,15 @@ fun requestPasswordData(gatt: BluetoothGatt, characteristic: BluetoothGattCharac
 
     sendPacket(gatt, characteristic, packet)
 //    writeLargeData(gatt, characteristic, packet.asByteArray())
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
+fun requestDeviceCountData(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+    val CHECKSUM: UInt = 175.toUByte() + 3.toUByte()
+    val packet: UByteArray = ubyteArrayOf(175u, 3u, 0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM.toUByte(), 13u, 10u)
+
+    Log.d("REQDEVCOUNT", packet.contentToString())
+    sendPacket(gatt, characteristic, packet)
 }
 
 fun saveDeviceName(context: Context, macAddress: String, customName: String) {

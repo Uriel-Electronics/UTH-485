@@ -124,6 +124,8 @@ class MainActivity : ComponentActivity() {
 
                     3 -> {
                         val deviceCounts = buf0.toInt() // ( 단말기 수, 자동 설정값 보다 우선 )
+                        Log.d("연결된 기기 수 :", deviceCounts.toString())
+                        viewModel.updateDeviceCount(deviceCounts)
                     }
 
                     5 -> {
