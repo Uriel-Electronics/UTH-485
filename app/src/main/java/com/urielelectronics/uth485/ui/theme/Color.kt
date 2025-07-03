@@ -34,5 +34,11 @@ val UrielBorderGray = Color(0xFFd2d2d2)
 val UrielBGDarkGray = Color(0xFF464a53)
 
 val UrielBGBeige = Color(0xFFf7f6f4)
-var UrielBGBeige2 = Color(0xFFf3f1ed)
-var UrielBorderBeige = Color(0xFFe2dfde)
+val UrielBGBeige2 = Color(0xFFf3f1ed)
+val UrielBorderBeige = Color(0xFFe2dfde)
+val UrielBorderWhite = Color(0xFFf1efed)
+
+val UrielGradientDarkGray = Color(0xFFd0cac8)
+val UrielGradientLightGray = Color(0xFFd4d0d0)
+val UrielIconGray = Color(0xFF959593)
+val UrielGradientGray = Color(0xFFd1cdcd)

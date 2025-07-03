@@ -8,36 +8,15 @@ import androidx.lifecycle.ViewModel
 class MyViewModel: ViewModel() {
     var isConnectLoading = mutableStateOf(false)
 
-    // 0xBF, mode = 1
-    var year by mutableStateOf(0)
-    var month by mutableStateOf(0)
-    var day by mutableStateOf(0)
-    var dayOfWeek by mutableStateOf(0) // 요일
-    var hour by mutableStateOf(0)
-    var minute by mutableStateOf(0)
-    var sec by mutableStateOf(0)
-
-    // 0xBF, mode = 3
-    var deviceCount by mutableStateOf(0) // 단말기 수
-
-
-    fun updateDeviceCount(
-        deviceCount: Int
-    ) {
-        this.deviceCount = deviceCount
-    }
-
-    // 0xBF, mode = 5
+    // 0xAF
+    var deviceNumber by mutableStateOf(0) // 단말기 수
     var password1 by mutableStateOf(0)
     var password2 by mutableStateOf(0)
     var password3 by mutableStateOf(0)
     var password4 by mutableStateOf(0)
 
-    // 0xBF, mode = 21
     var power by mutableStateOf(0)
     var lock by mutableStateOf(0)
-
-    // 0xBF, mode = 23
 
     // mode = 27
     var rN by mutableStateOf(0) // rN

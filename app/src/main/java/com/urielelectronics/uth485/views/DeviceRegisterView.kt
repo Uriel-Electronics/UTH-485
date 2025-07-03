@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,31 +59,37 @@ import com.urielelectronics.uth485.views.components.Popup
 import com.urielelectronics.uth485.views.components.SaveButton
 
 
-class Device(var id: Int, var name: String, var group: Int)
 
 @SuppressLint("MissingPermission")
 @Composable
 fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewModel) {
     var deviceCount by remember { mutableIntStateOf(viewModel.deviceNumber) }
-    var groupCount by remember { mutableIntStateOf(0) }
-    val devices = remember { mutableStateListOf<Device>() }
+    var groupCount by remember { mutableIntStateOf(viewModel.groupCount) }
+    var devices by remember { mutableStateOf(emptyList<Device>()) }
     var showSavePopUp = remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewState.value) {
+        if(viewState.value == ViewState.DEVICE_REGISTER) {
+            devices = viewModel.deviceList.toList()
+        }
+    }
+
 
     LaunchedEffect(deviceCount) {
         // 늘려야 할 때
         if (devices.size < deviceCount) {
             repeat(deviceCount - devices.size) {
-                devices.add(Device(
+                devices += Device(
                     id = devices.size + 1,
                     name = (devices.size + 1).toString(),
                     group = 0
-                ))
+                )
             }
         }
         // 줄여야 할 때
         else if (devices.size > deviceCount) {
             repeat(devices.size - deviceCount) {
-                devices.removeAt(deviceCount)
+                devices = devices.subList(0, deviceCount)
             }
         }
     }
@@ -179,15 +186,21 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                                     color = UrielTextGray,
                                     shape = RoundedCornerShape(16.dp)
                                 )
-                                .clip(RoundedCornerShape(16.dp))
-                            , maxGroup = groupCount
+                                .clip(RoundedCornerShape(16.dp)),
+                            maxGroup = groupCount,
                         )
 
                         // 2. 저장 버튼
                         SaveButton(
                             onButtonClick = {
                                 viewModel.deviceNumber = deviceCount
-                                //TODO - viewModel.group, devices 업데이트
+
+                                // TODO - viewModel.group, devices 업데이트
+                                viewModel.groupCount = groupCount
+
+                                viewModel.updateDeviceList(devices)
+                                // TODO
+
                                 showSavePopUp.value = true
                             },
                             text = "저장",
@@ -254,16 +267,16 @@ fun IconAndText(text : String) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Table(
-    headers : List<String>,
-    rows : List<Device>,
-    weights : List<Float>,
+    headers: List<String>,
+    rows: List<Device>,
+    weights: List<Float>,
     modifier: Modifier,
-    maxGroup : Int
+    maxGroup: Int,
 ) {
     val scrollState = rememberScrollState()
     var showNamePopUp = remember { mutableStateOf(false) }
     var showGroupPopUp = remember { mutableStateOf(false) }
-    var selectedDevice = remember { mutableStateOf<Device>(Device(0,"",0)) }
+    var selectedDevice by remember { mutableStateOf<Device>(Device(0,"",0)) }
 
 
     Box(
@@ -323,10 +336,10 @@ fun Table(
                                         },
                                         onLongClick = {
                                             if(colIdx == 1) {
-                                                selectedDevice.value = device
+                                                selectedDevice = device
                                                 showNamePopUp.value = true // 이름 변경 팝업 표시
                                             } else if(colIdx == 2) {
-                                                selectedDevice.value = device
+                                                selectedDevice = device
                                                 showGroupPopUp.value = true // 이름 변경 팝업 표시
                                             }
                                         }
@@ -363,19 +376,19 @@ fun Table(
     // 다이얼로그 표시
     if (showNamePopUp.value) {
         EditDeviceNamePopUp(
-            oldName = selectedDevice.value.name,
+            oldName = selectedDevice.name,
             onDismiss = { showNamePopUp.value = false },
             onNameChanged = { newName ->
-                selectedDevice.value.name = newName  // 새로운 이름 즉시 반영
+                selectedDevice.name = newName  // 새로운 이름 즉시 반영
             }
         )
     }
     else if(showGroupPopUp.value) {
         EditDeviceGroupPopUp (
-            oldGroup = selectedDevice.value.group.toString(),
+            oldGroup = selectedDevice.group.toString(),
             onDismiss = { showGroupPopUp.value = false },
             onGroupChanged = { newGroup ->
-                selectedDevice.value.group = newGroup  // 새로운 그룹 즉시 반영
+                selectedDevice.group = newGroup  // 새로운 그룹 즉시 반영
             },
             maxGroup = maxGroup
         )
