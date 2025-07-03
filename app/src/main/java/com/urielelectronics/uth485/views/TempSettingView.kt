@@ -138,7 +138,7 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
                                         },
                                         settingTemp = device.settingTemp,
                                         currentTemp = viewModel.currentTemp,
-                                        theme = DeviceTempCardTheme.Filled
+                                        theme = if(device.powerOn) DeviceTempCardTheme.Filled else DeviceTempCardTheme.Outlined
                                     )
                                 }
                                 else {
@@ -169,7 +169,7 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
                                         },
                                         settingTemp = device.settingTemp,
                                         currentTemp = viewModel.currentTemp,
-                                        theme = DeviceTempCardTheme.Filled
+                                        theme = if(device.powerOn) DeviceTempCardTheme.Filled else DeviceTempCardTheme.Outlined
                                     )
                                 }
                                 else {

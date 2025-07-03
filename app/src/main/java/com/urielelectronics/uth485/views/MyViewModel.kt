@@ -1,20 +1,52 @@
 package com.urielelectronics.uth485.views
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.collection.IntIntPair
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import java.sql.Time
+import java.time.LocalTime
 
+val defaultTimeList =
+    listOf(
+        listOf( // 월
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 화
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 수
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 목
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 금
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 토
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+        listOf( // 일
+            IntIntPair(5,30), IntIntPair(23,30)
+        ),
+    )
 
-data class Device(
+data class Device (
     var id: Int,
     var name: String,
     var group: Int,
     var settingTemp : Int = 30,
     var isLocked : Boolean = false,
-    var powerOn : Boolean = false
+    var powerOn : Boolean = false,
+    var time : List<List<IntIntPair>> = defaultTimeList,
+    var timeChecked : List<Boolean> = listOf(false,false,false,false,false,false,false)
+
 )
 
 class MyViewModel: ViewModel() {
