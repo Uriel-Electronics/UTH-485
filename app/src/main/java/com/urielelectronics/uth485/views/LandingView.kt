@@ -96,7 +96,7 @@ fun LandingView(viewState : MutableState<ViewState>, viewModel: MyViewModel) {
                 )
                 HeaderDropdown(
                     "예약 설정",
-                    onSelect = arrayOf({ viewState.value = ViewState.DEVICE_TIME_SETTING })
+                    onSelect = arrayOf({ viewState.value = ViewState.DEVICE_TIME_GLOBAL_SETTING })
                 )
                 HeaderDropdown(
                     "상태 확인",

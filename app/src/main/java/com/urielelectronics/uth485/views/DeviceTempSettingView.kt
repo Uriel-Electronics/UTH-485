@@ -37,58 +37,64 @@ fun DeviceTempSettingView (
     if(deviceIdx < 0) return
     var currDevice by remember { mutableStateOf<Device>(viewModel.deviceList[deviceIdx]) }
 
-    Scaffold (
-        topBar = {
-            Header(
-                title = "개별 제어",
-                content = {},
-                viewState,
-                isBack = true,
-                goBackTo = ViewState.DEVICE_TEMP_SETTING
-            )
-        }
-    ) { headerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(headerPadding)
-                .background(UrielBGBeige),
-            contentAlignment = Alignment.Center
-        ) {
-            Column (
-                Modifier.fillMaxSize()
+    if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
+        DeviceTimeSettingView(viewState, viewModel, type = "device", currDevice.id)
+    }
+    else {
+        Scaffold (
+            topBar = {
+                Header(
+                    title = "개별 제어",
+                    content = {},
+                    viewState,
+                    isBack = true,
+                    goBackTo = ViewState.DEVICE_TEMP_SETTING
+                )
+            }
+        ) { headerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(headerPadding)
+                    .background(UrielBGBeige),
+                contentAlignment = Alignment.Center
             ) {
-                Column (Modifier
-                    .weight(2f)
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top) {
-
-                    Text(
-                        currDevice.name,
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Light)
-                    Row (Modifier.fillMaxWidth(0.6f),
-                        horizontalArrangement = Arrangement.SpaceBetween) {
-                        TemperatureGauge("설정 온도", currDevice.settingTemp)
-                        TemperatureGauge("현재 온도", viewModel.currentTemp)
-                    }
-                }
-                Box (
-                    Modifier
-                        .weight(1f)
+                Column (
+                    Modifier.fillMaxSize()
+                ) {
+                    Column (Modifier
+                        .weight(2f)
                         .fillMaxWidth()
-                ){
-                    ControlFooter (
-                        viewState = viewState,
-                        device = currDevice,
-                        onDeviceChange = { newDevice, changedProp ->
-                            currDevice = newDevice
-                            viewModel.updateDeviceAt(deviceIdx, newDevice)
-                        }
-                    )
+                        .padding(vertical = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top) {
 
+                        Text(
+                            currDevice.name,
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Light)
+                        Row (Modifier.fillMaxWidth(0.6f),
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                            TemperatureGauge("설정 온도", currDevice.settingTemp)
+                            TemperatureGauge("현재 온도", viewModel.currentTemp)
+                        }
+                    }
+                    Box (
+                        Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    ){
+                        ControlFooter (
+                            viewState = viewState,
+                            device = currDevice,
+                            onDeviceChange = { newDevice, changedProp ->
+                                currDevice = newDevice
+                                viewModel.updateDeviceAt(deviceIdx, newDevice)
+                            },
+                            type = "device"
+                        )
+
+                    }
                 }
             }
         }

@@ -37,10 +37,11 @@ fun GroupTempSettingView (
 ) {
     var currGroup by remember { mutableIntStateOf(if(viewModel.groupCount > 0) 1 else 0) }
     var groupDevice by remember { mutableStateOf<Device>(
-        Device(0,"",currGroup,viewModel.currentTemp,false,false)) }
+        Device(0,"",currGroup,viewModel.currentTemp,false,false)
+    ) }
 
-    if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
-        DeviceTimeSettingView(viewState, viewModel, currGroup)
+    if (viewState.value == ViewState.DEVICE_TIME_GROUP_SETTING) {
+        DeviceTimeSettingView(viewState, viewModel, type = "group", currGroup)
     }
     else {
 
@@ -129,7 +130,7 @@ fun GroupTempSettingView (
                                 }
                                 groupDevice = newDevice
                             },
-                            controlList = listOf<String>("온도 내림", "온도 올림", "잠금", "전원", "시간 설정")
+                            type = "group"
                         )
 
                     }

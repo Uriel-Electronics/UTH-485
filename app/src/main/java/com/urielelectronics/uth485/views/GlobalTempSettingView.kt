@@ -90,7 +90,8 @@ fun GlobalTempSettingView (
                                 }
                             }
                             globalDevice = newDevice
-                        }
+                        },
+                        type = "global"
                     )
                 }
             }

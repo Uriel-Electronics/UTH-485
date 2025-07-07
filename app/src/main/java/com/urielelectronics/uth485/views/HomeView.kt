@@ -79,7 +79,11 @@ enum class ViewState {
     DEVICE_TEMP_DEVICE_SETTING,
     DEVICE_TEMP_GLOBAL_SETTING,
     DEVICE_TEMP_GROUP_SETTING,
+
     DEVICE_TIME_SETTING,
+    DEVICE_TIME_GROUP_SETTING,
+    DEVICE_TIME_GLOBAL_SETTING,
+
     DEVICE_STATUS,
     DEVICE_ERROR_STATUS,
 
@@ -148,14 +152,20 @@ fun HomeView(viewModel: MyViewModel) {
     else if (viewState.value == ViewState.DEVICE_DEFAULT_SETTING) {
         DeviceDefaultSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_SETTING || viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
+    else if (viewState.value == ViewState.DEVICE_TEMP_SETTING
+        || viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING
+        || viewState.value == ViewState.DEVICE_TIME_SETTING) {
         TempSettingView(viewState = viewState, viewModel = viewModel)
     }
-    else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING || viewState.value == ViewState.DEVICE_TIME_SETTING) {
+    else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING
+        || viewState.value == ViewState.DEVICE_TIME_GROUP_SETTING) {
         GroupTempSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GLOBAL_SETTING) {
         GlobalTempSettingView(viewState = viewState, viewModel = viewModel)
+    }
+    else if(viewState.value == ViewState.DEVICE_TIME_GLOBAL_SETTING) {
+        DeviceTimeSettingView(viewState, viewModel, type = "global", 0)
     }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
         StatusCheckView(viewState = viewState, viewModel = viewModel)

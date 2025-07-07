@@ -33,8 +33,12 @@ fun ControlFooter(
     viewState: MutableState<ViewState>,
     device: Device,
     onDeviceChange: (Device, String) -> Unit,
-    controlList: List<String> = listOf<String>("온도 내림", "온도 올림", "잠금", "전원")
+    type : String = "device" // "device" || "group" || "global"
 ) {
+
+    val controlList =
+        if(type == "global") listOf<String>("온도 내림", "온도 올림", "잠금", "전원")
+        else listOf<String>("온도 내림", "온도 올림", "잠금", "전원", "시간 설정")
 
     Box (
         Modifier
@@ -128,7 +132,11 @@ fun ControlFooter(
                         icon = ImageVector.vectorResource(tune),
                         onClick = {
                             // TODO - 시간 설정 뷰로 이동
-                            viewState.value = ViewState.DEVICE_TIME_SETTING
+                            when(type) {
+                                "device" -> viewState.value = ViewState.DEVICE_TIME_SETTING
+                                "group" -> viewState.value = ViewState.DEVICE_TIME_GROUP_SETTING
+                                "global" -> viewState.value = ViewState.DEVICE_TIME_GLOBAL_SETTING
+                            }
                         },
                     )
                     Text(

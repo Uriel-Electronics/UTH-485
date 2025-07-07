@@ -14,29 +14,23 @@ import androidx.lifecycle.ViewModel
 import java.sql.Time
 import java.time.LocalTime
 
+data class ReservationTime (
+    var startHour : Int = 5,
+    var startMinute: Int = 30,
+    var endHour : Int = 23,
+    var endMinute: Int = 30,
+    var on : Boolean = false
+)
+
 val defaultTimeList =
     listOf(
-        listOf( // 월
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 화
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 수
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 목
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 금
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 토
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 일
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
+        ReservationTime(5,30,23,30,false), // 월
+        ReservationTime(5,30,23,30,false), // 화
+        ReservationTime(5,30,23,30,false), // 수
+        ReservationTime(5,30,23,30,false), // 목
+        ReservationTime(5,30,23,30,false), // 금
+        ReservationTime(5,30,23,30,false), // 토
+        ReservationTime(5,30,23,30,false), // 일
     )
 
 enum class SettingMode {
@@ -51,7 +45,7 @@ data class Device (
     var settingTemp : Int = 30,
     var isLocked : Boolean = false,
     var powerOn : Boolean = false,
-    var time : List<List<IntIntPair>> = defaultTimeList,
+    var time : List<ReservationTime> = defaultTimeList,
     var timeChecked : List<Boolean> = listOf(false,false,false,false,false,false,false),
     var mode : SettingMode = SettingMode.TempModeSetting,
     var print : Boolean = true,
@@ -109,16 +103,16 @@ class MyViewModel: ViewModel() {
         Device(12, "112호", 1),
         Device(13, "113호", 3),
     )
-    var deviceList = mutableStateListOf<Device>().apply {
+    var deviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
         addAll(initialDeviceList)
-    } // 단말기 리스트
-    fun updateDeviceList(newDeviceList : List<Device>) {
+    }
+    fun updateDeviceList(newDeviceList : List<Device>) { // 단말기 리스트 전체 업데이트 메서드
         deviceList.clear()
         deviceList.addAll(newDeviceList)
-    } // 단말기 리스트 전체 업데이트 메서드
-    fun updateDeviceAt(index : Int, newDevice : Device) {
+    }
+    fun updateDeviceAt(index : Int, newDevice : Device) { // 단말기 업데이트 메서드
         deviceList[index] = newDevice
-    } // 단말기 업데이트 메서드
+    }
     var currentTemp by mutableStateOf(28) // 현재 온도
     // --- TODO ---
 }

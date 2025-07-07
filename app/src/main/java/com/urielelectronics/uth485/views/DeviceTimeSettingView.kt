@@ -1,5 +1,6 @@
 package com.urielelectronics.uth485.views
 
+import android.widget.Toast
 import androidx.collection.IntIntPair
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +21,9 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,12 +52,14 @@ import com.urielelectronics.uth485.views.components.NumberSelector2
 fun DeviceTimeSettingView (
     viewState: MutableState<ViewState>,
     viewModel: MyViewModel,
-    group : Int
+    type : String = "device", // "device" || "group" || "global"
+    id : Int,
 ) {
 
-    var tmpTime by remember { mutableStateOf(defaultTimeList) }
-    var checkedList = remember {
-        mutableStateListOf<Boolean>(false, false, false, false, false, false, false)
+    var tmpTime by remember { mutableStateOf(
+        if(type == "device") viewModel.deviceList[id-1].time
+        else defaultTimeList
+        )
     }
     val scrollState = rememberScrollState()
 
@@ -65,7 +71,10 @@ fun DeviceTimeSettingView (
                 content = {},
                 viewState,
                 isBack = true,
-                goBackTo = ViewState.DEVICE_CONNECTED
+                goBackTo =
+                    if(viewState.value == ViewState.DEVICE_TIME_SETTING) ViewState.DEVICE_TEMP_DEVICE_SETTING
+                    else if(viewState.value == ViewState.DEVICE_TIME_GROUP_SETTING) ViewState.DEVICE_TEMP_GROUP_SETTING
+                    else ViewState.DEVICE_CONNECTED
             )
         }
     ) { headerPadding ->
@@ -95,51 +104,50 @@ fun DeviceTimeSettingView (
                             .height(2.dp))
                     WeekBlock(
                         week = day,
-                        valueList = tmpTime[idx],
+                        value = tmpTime[idx],
                         onValueChanged = { newTime, changedProp ->
-                            val dayTimeList = tmpTime[idx].toMutableList() // 월요일 list
-                            var newTempTime: MutableList<List<IntIntPair>> = mutableListOf()
+                            val newResTime = tmpTime[idx] // reservationTime
+                            val updated = when (changedProp) {
+                                "startHour"   -> newResTime.copy(startHour   = newTime)
+                                "startMinute" -> newResTime.copy(startMinute = newTime)
+                                "endHour"     -> newResTime.copy(endHour     = newTime)
+                                "endMinute"   -> newResTime.copy(endMinute   = newTime)
+                                else          -> newResTime
+                            }
+                            val newTmpTime = tmpTime.toMutableList().apply {
+                                this[idx] = updated
+                            }
+                            tmpTime = newTmpTime
                             for(i in 0..viewModel.deviceNumber-1) {
-                                if (viewModel.deviceList[i].group == group) {
+                                if (
+                                    if(type == "device") viewModel.deviceList[i].id == id
+                                    else if(type == "group") viewModel.deviceList[i].group == id
+                                    else true
+                                ) {
                                     val oldDevice = viewModel.deviceList[i]
-                                    tmpTime = oldDevice.time
-                                    when (changedProp) {
-                                        "startHour" -> {
-                                            if(!oldDevice.isLocked) {
-                                                dayTimeList[0] = IntIntPair(newTime, dayTimeList[0].second) // 월요일 시작 시간 새로 끼우고 분은 기존 그대로
-                                                newTempTime = tmpTime.toMutableList().apply { this[0] = dayTimeList }
-                                                viewModel.updateDeviceAt(i, oldDevice.copy(time = newTempTime))
-                                            }
-                                        }
-                                        "startMinute" -> {
-                                            if(!oldDevice.isLocked) {
-                                                dayTimeList[0] = IntIntPair(dayTimeList[0].first, newTime) // 월요일 시작 분 새로 끼우고 시간은 기존 그대로
-                                                newTempTime = tmpTime.toMutableList().apply { this[0] = dayTimeList }
-                                                viewModel.updateDeviceAt(i, oldDevice.copy(time = newTempTime))
-                                            }
-                                        }
-                                        "endHour" -> {
-                                            if(!oldDevice.isLocked) {
-                                                dayTimeList[1] = IntIntPair(newTime, dayTimeList[1].second) // 월요일 끝 시간 새로 끼우고 분은 기존 그대로
-                                                newTempTime = tmpTime.toMutableList().apply { this[0] = dayTimeList }
-                                                viewModel.updateDeviceAt(i, oldDevice.copy(time = newTempTime))
-                                            }
-                                        }
-                                        "endMinute" -> {
-                                            if(!oldDevice.isLocked) {
-                                                dayTimeList[1] = IntIntPair(dayTimeList[1].first, newTime) // 월요일 끝 분 새로 끼우고 시간은 기존 그대로
-                                                newTempTime = tmpTime.toMutableList().apply { this[0] = dayTimeList }
-                                                viewModel.updateDeviceAt(i, oldDevice.copy(time = newTempTime))
-                                            }
-                                        }
+                                    if(!oldDevice.isLocked) {
+                                        viewModel.updateDeviceAt(i, oldDevice.copy(time = newTmpTime))
                                     }
                                 }
-                            tmpTime = newTempTime
-                        }
-
+                            }
                         },
-                        checked = checkedList[idx],
-                        onCheckedChange = { checkedList[idx] = it }
+                        checked = tmpTime[idx].on,
+                        onCheckedChange = { isOn ->
+                            val newResTime = tmpTime[idx].copy(on = isOn)
+                            val newTmpTime = tmpTime.toMutableList().apply {
+                                this[idx] = newResTime
+                            }
+                            tmpTime = newTmpTime
+                            for(i in 0..viewModel.deviceNumber-1) {
+                                if (
+                                    if(type == "device") viewModel.deviceList[i].id == id
+                                    else if(type == "group") viewModel.deviceList[i].group == id
+                                    else true
+                                ) {
+                                    viewModel.updateDeviceAt(i, viewModel.deviceList[i].copy(time = newTmpTime))
+                                }
+                            }
+                        }
                     )
                 }
             }
@@ -192,7 +200,7 @@ fun WeekHeader(
 @Composable
 fun WeekBlock(
     week : String,
-    valueList : List<IntIntPair>,
+    value : ReservationTime,
     onValueChanged : (Int, String) -> Unit,
     checked : Boolean,
     onCheckedChange : (Boolean) -> Unit
@@ -225,7 +233,7 @@ fun WeekBlock(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NumberSelector2(
-                value = valueList[0].first,
+                value = value.startHour,
                 onValueChange = { newValue -> onValueChanged(newValue, "startHour")},
                 min = 0,
                 max = 23,
@@ -238,7 +246,7 @@ fun WeekBlock(
                 modifier = Modifier
                     .padding(8.dp),)
             NumberSelector2(
-                value = valueList[0].second,
+                value = value.startMinute,
                 onValueChange = { newValue -> onValueChanged(newValue, "startMinute")},
                 min = 0,
                 max = 59,
@@ -262,7 +270,7 @@ fun WeekBlock(
             verticalAlignment = Alignment.CenterVertically
         )  {
             NumberSelector2(
-                value = valueList[1].first,
+                value = value.endHour,
                 onValueChange = { newValue -> onValueChanged(newValue, "endHour")},
                 min = 0,
                 max = 23,
@@ -275,7 +283,7 @@ fun WeekBlock(
                 modifier = Modifier
                     .padding(8.dp),)
             NumberSelector2(
-                value = valueList[1].second,
+                value = value.endMinute,
                 onValueChange = { newValue -> onValueChanged(newValue, "endMinute")},
                 min = 0,
                 max = 59,

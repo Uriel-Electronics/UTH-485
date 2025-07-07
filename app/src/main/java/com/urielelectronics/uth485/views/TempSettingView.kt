@@ -91,7 +91,7 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
 
 
 
-    if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
+    if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING || viewState.value == ViewState.DEVICE_TIME_SETTING) {
         DeviceTempSettingView(viewState, viewModel, selectedDeviceId)
     }
     else {
