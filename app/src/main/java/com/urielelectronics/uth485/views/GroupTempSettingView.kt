@@ -80,7 +80,7 @@ fun GroupTempSettingView (
                             .padding(vertical = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically) {
-                        TemperatureGauge("설정 온도", groupDevice.settingTemp)
+                        TemperatureGauge("설정 온도", groupDevice.settingTemp, viewModel = viewModel)
                         Column(
                             Modifier
                                 .fillMaxHeight()
@@ -108,6 +108,7 @@ fun GroupTempSettingView (
                     ){
                         ControlFooter (
                             viewState = viewState,
+                            viewModel = viewModel,
                             device = groupDevice,
                             onDeviceChange = { newDevice, changedProp ->
                                 for(i in 0..viewModel.deviceNumber-1) {

@@ -75,8 +75,8 @@ fun DeviceTempSettingView (
                             fontWeight = FontWeight.Light)
                         Row (Modifier.fillMaxWidth(0.6f),
                             horizontalArrangement = Arrangement.SpaceBetween) {
-                            TemperatureGauge("설정 온도", currDevice.settingTemp)
-                            TemperatureGauge("현재 온도", viewModel.currentTemp)
+                            TemperatureGauge("설정 온도", currDevice.settingTemp, viewModel = viewModel)
+                            TemperatureGauge("현재 온도", viewModel.currentTemp, viewModel = viewModel)
                         }
                     }
                     Box (
@@ -86,6 +86,7 @@ fun DeviceTempSettingView (
                     ){
                         ControlFooter (
                             viewState = viewState,
+                            viewModel = viewModel,
                             device = currDevice,
                             onDeviceChange = { newDevice, changedProp ->
                                 currDevice = newDevice

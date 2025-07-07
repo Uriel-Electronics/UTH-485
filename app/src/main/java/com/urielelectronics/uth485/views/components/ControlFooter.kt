@@ -26,11 +26,13 @@ import com.urielelectronics.uth485.R.drawable.power
 import com.urielelectronics.uth485.R.drawable.tune
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige2
 import com.urielelectronics.uth485.views.Device
+import com.urielelectronics.uth485.views.MyViewModel
 import com.urielelectronics.uth485.views.ViewState
 
 @Composable
 fun ControlFooter(
     viewState: MutableState<ViewState>,
+    viewModel : MyViewModel,
     device: Device,
     onDeviceChange: (Device, String) -> Unit,
     type : String = "device" // "device" || "group" || "global"
@@ -62,7 +64,9 @@ fun ControlFooter(
                         onClick = {
                             // TODO - 온도 내림 작동
                             if(!device.isLocked) {
-                                onDeviceChange(device.copy(settingTemp = device.settingTemp - 1), "settingTemp")
+                                onDeviceChange(device.copy(settingTemp =
+                                    if(device.settingTemp > viewModel.V_L) device.settingTemp - 1 else device.settingTemp),
+                                    "settingTemp")
                             }
                         }
                     )
@@ -82,7 +86,9 @@ fun ControlFooter(
                         onClick = {
                             // TODO - 온도 올림 작동
                             if (!device.isLocked) {
-                                onDeviceChange(device.copy(settingTemp = device.settingTemp + 1), "settingTemp")
+                                onDeviceChange(device.copy(settingTemp =
+                                    if(device.settingTemp < viewModel.V_H) device.settingTemp + 1 else device.settingTemp),
+                                    "settingTemp")
                             }
                         }
                     )

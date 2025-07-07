@@ -56,7 +56,7 @@ fun GlobalTempSettingView (
                     .padding(vertical = 24.dp),
                     contentAlignment = Alignment.Center)
                 {
-                    TemperatureGauge("설정 온도", globalDevice.settingTemp)
+                    TemperatureGauge("설정 온도", globalDevice.settingTemp, viewModel = viewModel)
                 }
                 Box (
                     Modifier
@@ -65,6 +65,7 @@ fun GlobalTempSettingView (
                 ){
                     ControlFooter (
                         viewState = viewState,
+                        viewModel = viewModel,
                         device = globalDevice,
                         onDeviceChange = { newDevice, changedProp ->
                             for(i in 0..viewModel.deviceNumber-1) {
