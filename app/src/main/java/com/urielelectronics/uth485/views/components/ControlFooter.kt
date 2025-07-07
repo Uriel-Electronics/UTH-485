@@ -26,15 +26,21 @@ import com.urielelectronics.uth485.R.drawable.power
 import com.urielelectronics.uth485.R.drawable.tune
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige2
 import com.urielelectronics.uth485.views.Device
+import com.urielelectronics.uth485.views.MyViewModel
 import com.urielelectronics.uth485.views.ViewState
 
 @Composable
 fun ControlFooter(
     viewState: MutableState<ViewState>,
+    viewModel : MyViewModel,
     device: Device,
     onDeviceChange: (Device, String) -> Unit,
-    controlList: List<String> = listOf<String>("온도 내림", "온도 올림", "잠금", "전원")
+    type : String = "device" // "device" || "group" || "global"
 ) {
+
+    val controlList =
+        if(type == "global") listOf<String>("온도 내림", "온도 올림", "잠금", "전원")
+        else listOf<String>("온도 내림", "온도 올림", "잠금", "전원", "시간 설정")
 
     Box (
         Modifier
@@ -58,7 +64,9 @@ fun ControlFooter(
                         onClick = {
                             // TODO - 온도 내림 작동
                             if(!device.isLocked) {
-                                onDeviceChange(device.copy(settingTemp = device.settingTemp - 1), "settingTemp")
+                                onDeviceChange(device.copy(settingTemp =
+                                    if(device.settingTemp > viewModel.V_L) device.settingTemp - 1 else device.settingTemp),
+                                    "settingTemp")
                             }
                         }
                     )
@@ -78,7 +86,9 @@ fun ControlFooter(
                         onClick = {
                             // TODO - 온도 올림 작동
                             if (!device.isLocked) {
-                                onDeviceChange(device.copy(settingTemp = device.settingTemp + 1), "settingTemp")
+                                onDeviceChange(device.copy(settingTemp =
+                                    if(device.settingTemp < viewModel.V_H) device.settingTemp + 1 else device.settingTemp),
+                                    "settingTemp")
                             }
                         }
                     )
@@ -128,7 +138,11 @@ fun ControlFooter(
                         icon = ImageVector.vectorResource(tune),
                         onClick = {
                             // TODO - 시간 설정 뷰로 이동
-                            viewState.value = ViewState.DEVICE_TIME_SETTING
+                            when(type) {
+                                "device" -> viewState.value = ViewState.DEVICE_TIME_SETTING
+                                "group" -> viewState.value = ViewState.DEVICE_TIME_GROUP_SETTING
+                                "global" -> viewState.value = ViewState.DEVICE_TIME_GLOBAL_SETTING
+                            }
                         },
                     )
                     Text(

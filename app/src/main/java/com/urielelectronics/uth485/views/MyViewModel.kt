@@ -14,29 +14,23 @@ import androidx.lifecycle.ViewModel
 import java.sql.Time
 import java.time.LocalTime
 
+data class ReservationTime (
+    var startHour : Int = 5,
+    var startMinute: Int = 30,
+    var endHour : Int = 23,
+    var endMinute: Int = 30,
+    var on : Boolean = false
+)
+
 val defaultTimeList =
     listOf(
-        listOf( // 월
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 화
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 수
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 목
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 금
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 토
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
-        listOf( // 일
-            IntIntPair(5,30), IntIntPair(23,30)
-        ),
+        ReservationTime(5,30,23,30,false), // 월
+        ReservationTime(5,30,23,30,false), // 화
+        ReservationTime(5,30,23,30,false), // 수
+        ReservationTime(5,30,23,30,false), // 목
+        ReservationTime(5,30,23,30,false), // 금
+        ReservationTime(5,30,23,30,false), // 토
+        ReservationTime(5,30,23,30,false), // 일
     )
 
 enum class SettingMode {
@@ -51,7 +45,7 @@ data class Device (
     var settingTemp : Int = 30,
     var isLocked : Boolean = false,
     var powerOn : Boolean = false,
-    var time : List<List<IntIntPair>> = defaultTimeList,
+    var time : List<ReservationTime> = defaultTimeList,
     var timeChecked : List<Boolean> = listOf(false,false,false,false,false,false,false),
     var mode : SettingMode = SettingMode.TempModeSetting,
     var print : Boolean = true,
@@ -102,23 +96,51 @@ class MyViewModel: ViewModel() {
         Device(5, "105호", 3, error = true, connectionError = true),
         Device(6, "106호", 1),
         Device(7, "107호", 3),
-        Device(8, "108호", 2),
+        Device(8, "108호", 2, mode = SettingMode.TimeModeSetting),
         Device(9, "109호", 2, error = true),
         Device(10, "110호", 1),
         Device(11, "111호", 3, connectionError = true),
-        Device(12, "112호", 1),
+        Device(12, "112호", 1, mode = SettingMode.TimeModeSetting),
         Device(13, "113호", 3),
     )
-    var deviceList = mutableStateListOf<Device>().apply {
+    var deviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
         addAll(initialDeviceList)
-    } // 단말기 리스트
-    fun updateDeviceList(newDeviceList : List<Device>) {
+    }
+    val initialGroupList = listOf<Device>(
+        Device(0, "group_1", 1),
+        Device(0, "group_2", 2),
+        Device(0, "group_3", 3),
+    )
+    var groupDeviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
+        addAll(initialGroupList)
+    }
+    var globalDevice = Device(0, "global_device", 0)
+    fun updateDeviceList(newDeviceList : List<Device>) { // 단말기 리스트 전체 업데이트 메서드
         deviceList.clear()
         deviceList.addAll(newDeviceList)
-    } // 단말기 리스트 전체 업데이트 메서드
-    fun updateDeviceAt(index : Int, newDevice : Device) {
+    }
+    fun updateDeviceGroup(groupCount : Int) {
+        val oldGroupList = groupDeviceList
+        groupDeviceList.clear()
+        repeat(groupCount) { i ->
+            // oldList 에 i 인덱스가 있으면 그 값을, 없으면 빈 Device()를
+            val element = oldGroupList.getOrNull(i) ?: Device(
+                id = 0,
+                name = "group_${i+1}",
+                group = i+1,
+            )
+            groupDeviceList.add(element)
+        }
+    }
+    fun updateDeviceAt(index : Int, newDevice : Device) { // 단말기 업데이트 메서드
         deviceList[index] = newDevice
-    } // 단말기 업데이트 메서드
+    }
+    fun updateGroupDevice(groupId : Int, newGroupDevice : Device) {
+        groupDeviceList[groupId - 1] = newGroupDevice
+    }
+    fun updateGlobalDevice(newGlobalDevice : Device) {
+        globalDevice = newGlobalDevice
+    }
     var currentTemp by mutableStateOf(28) // 현재 온도
     // --- TODO ---
 }

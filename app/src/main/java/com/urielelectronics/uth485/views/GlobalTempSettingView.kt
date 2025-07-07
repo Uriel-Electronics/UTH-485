@@ -27,8 +27,7 @@ fun GlobalTempSettingView (
     viewModel: MyViewModel
 ) {
 
-    var globalDevice by remember { mutableStateOf<Device>(
-        Device(0,"",0,viewModel.currentTemp,false,false)) }
+    var globalDevice by remember { mutableStateOf<Device>(viewModel.globalDevice) }
 
     Scaffold (
         topBar = {
@@ -57,7 +56,7 @@ fun GlobalTempSettingView (
                     .padding(vertical = 24.dp),
                     contentAlignment = Alignment.Center)
                 {
-                    TemperatureGauge("설정 온도", globalDevice.settingTemp)
+                    TemperatureGauge("설정 온도", globalDevice.settingTemp, viewModel = viewModel)
                 }
                 Box (
                     Modifier
@@ -66,6 +65,7 @@ fun GlobalTempSettingView (
                 ){
                     ControlFooter (
                         viewState = viewState,
+                        viewModel = viewModel,
                         device = globalDevice,
                         onDeviceChange = { newDevice, changedProp ->
                             for(i in 0..viewModel.deviceNumber-1) {
@@ -83,14 +83,15 @@ fun GlobalTempSettingView (
                                         }
                                     }
                                     "powerOn" -> {
-                                        if (!oldDevice.isLocked) {
-                                            viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
-                                        }
+                                        viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
+
                                     }
                                 }
                             }
                             globalDevice = newDevice
-                        }
+                            viewModel.updateGlobalDevice(newDevice)
+                        },
+                        type = "global"
                     )
                 }
             }
