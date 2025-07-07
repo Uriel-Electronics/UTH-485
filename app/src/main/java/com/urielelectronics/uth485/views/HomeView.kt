@@ -77,7 +77,6 @@ enum class ViewState {
     DEVICE_TIME_SETTING,
     DEVICE_STATUS,
     DEVICE_ERROR_STATUS,
-    DEVICE_TEMP_GRAPH,
 
     FIND_DEVICE,
 
@@ -187,10 +186,6 @@ fun HomeView(viewModel: MyViewModel) {
                         onSelect = arrayOf({ viewState.value = ViewState.DEVICE_ERROR_STATUS })
                     )
                     HeaderDropdown(
-                        "온도 그래프",
-                        onSelect = arrayOf({ viewState.value = ViewState.DEVICE_TEMP_GRAPH })
-                    )
-                    HeaderDropdown(
                         "사용자 정보 설정",
                         onSelect = arrayOf({ viewState.value = ViewState.DEVICE_PW_SETTING })
                     )
@@ -258,30 +253,17 @@ fun HomeView(viewModel: MyViewModel) {
     else if (viewState.value == ViewState.DEVICE_TEMP_SETTING || viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
         TempSettingView(viewState = viewState, viewModel = viewModel)
     }
-//    else if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING) {
-//        DeviceTempSettingView(viewState = viewState, viewModel = viewModel)
-//    }
     else if (viewState.value == ViewState.DEVICE_TEMP_GROUP_SETTING || viewState.value == ViewState.DEVICE_TIME_SETTING) {
         GroupTempSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GLOBAL_SETTING) {
         GlobalTempSettingView(viewState = viewState, viewModel = viewModel)
     }
-//    else if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
-////        DeviceTimeSettingView(viewState = viewState)
-//        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
-//    }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
-//        DeviceStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        StatusCheckView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_ERROR_STATUS) {
-//        DeviceErrorStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
-    }
-    else if (viewState.value == ViewState.DEVICE_TEMP_GRAPH) {
-//        DeviceTempGraphView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        ErrorMessageView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_PW_SETTING) {
         PasswordSettingView(viewState = viewState, viewModel = viewModel)
