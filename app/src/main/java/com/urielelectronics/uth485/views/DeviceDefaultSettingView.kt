@@ -59,6 +59,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.urielelectronics.uth485.R.drawable.minus
 import com.urielelectronics.uth485.R.drawable.tune
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige
 import com.urielelectronics.uth485.ui.theme.UrielBGBeige2
@@ -73,11 +74,8 @@ import com.urielelectronics.uth485.ui.theme.UrielTextGray
 import com.urielelectronics.uth485.views.components.Header
 import com.urielelectronics.uth485.views.components.Popup
 import com.urielelectronics.uth485.views.components.SaveButton
+import com.urielelectronics.uth485.views.components.UrielFancyButton
 
-enum class SettingMode {
-    TempModeSetting,
-    TimeModeSetting
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,10 +97,10 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
     var fisrtTime = remember { mutableStateOf(viewModel.fisrtTime.toString())} // 초기투입시간
     var step = remember { mutableIntStateOf(viewModel.step)} // 시간단계
 
-    var tempErrMsgOn = remember { mutableStateOf<Boolean>(true) }
-    var tempErrMsgFrequency = remember { mutableIntStateOf(5) }
-    var timeErrMsgOn = remember { mutableStateOf<Boolean>(true) }
-    var timeErrMsgFrequency = remember { mutableIntStateOf(5) }
+    var tempErrMsgOn = remember { mutableStateOf<Boolean>(viewModel.tempErrMsgOn) }
+    var tempErrMsgFrequency = remember { mutableIntStateOf(viewModel.tempErrMsgFrequency) }
+    var timeErrMsgOn = remember { mutableStateOf<Boolean>(viewModel.timeErrMsgOn) }
+    var timeErrMsgFrequency = remember { mutableIntStateOf(viewModel.timeErrMsgFrequency) }
     val errMsgFrequencyOptions = listOf<Int>(5, 10, 15, 30, 50, 60)
 
     Scaffold (
@@ -434,8 +432,10 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                 viewModel.fisrtTime = fisrtTime.value.toInt()
                                 viewModel.step = step.value.toInt()
 
-                                // viewModel.errMsgOn = errMsgOn.value
-                                // viewModel.errMsgFrequency = errMsgFrequency.value
+                                viewModel.tempErrMsgOn = tempErrMsgOn.value
+                                viewModel.tempErrMsgFrequency = tempErrMsgFrequency.value
+                                viewModel.timeErrMsgOn = timeErrMsgOn.value
+                                viewModel.timeErrMsgFrequency = timeErrMsgFrequency.value
                                 // TODO - 기본값설정 업데이트
                         },
                         text = "설정",
@@ -604,7 +604,7 @@ fun EditSettingBox(
 fun ValueTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    unit : String,
+    unit : String?,
     example : String?,
 ) {
     Row (
@@ -625,13 +625,15 @@ fun ValueTextField(
                 textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                    .fillMaxWidth(if(unit == null) 1f else 0.7f)
                     .fillMaxHeight()
                     .border(1.dp, UrielBorderGray, RoundedCornerShape(36.dp)),
                 decorationBox = { innerTextField ->
                     Box(
                         Modifier
                             .fillMaxSize()
+                            .clip(RoundedCornerShape(36.dp))
+                            .background(UrielBGWhite)
                             .padding(horizontal = 8.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -639,14 +641,18 @@ fun ValueTextField(
                     }
                 }
             )
-            Spacer(Modifier.width(6.dp))
-            Text(unit,
-                fontWeight = FontWeight.Medium)
+            if(unit != null) {
+                Spacer(Modifier.width(6.dp))
+                Text(unit,
+                    fontWeight = FontWeight.Medium)
+            }
         }
-        Text(
-            text = example ?: "",
-            color = UrielTextGray,
-            fontWeight = FontWeight.Medium,)
+        if(example != null) {
+            Text(
+                text = example,
+                color = UrielTextGray,
+                fontWeight = FontWeight.Medium,)
+        }
     }
 }
 
@@ -655,46 +661,32 @@ fun NumberButtonTable(
     value : Int,
     onValueChange: (Int) -> Unit
 ) {
-    Column {
-        Row {
-            NumberButton(1, onValueChange = onValueChange, value)
-            NumberButton(2, onValueChange = onValueChange, value)
-            NumberButton(3, onValueChange = onValueChange, value)
-            NumberButton(4, onValueChange = onValueChange, value)
-            NumberButton(5, onValueChange = onValueChange, value)
+    Column (verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row (horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            for ( i in 1..5) {
+                UrielFancyButton(
+                    text = i.toString(),
+                    type = "text",
+                    onClick = { onValueChange(i) },
+                    onSelected = (value == i),
+                    size = 72.dp,
+                    fontSize = 20.sp
+                )
+            }
         }
-        Row {
-            NumberButton(6, onValueChange = onValueChange, value)
-            NumberButton(7, onValueChange = onValueChange, value)
-            NumberButton(8, onValueChange = onValueChange, value)
-            NumberButton(9, onValueChange = onValueChange, value)
-            NumberButton(10, onValueChange = onValueChange, value)
+        Row (horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            for ( i in 6..10) {
+                UrielFancyButton(
+                    text = i.toString(),
+                    type = "text",
+                    onClick = { onValueChange(i) },
+                    onSelected = (value == i),
+                    size = 72.dp,
+                    fontSize = 20.sp
+                )
+            }
         }
     }
-}
-
-@Composable
-fun NumberButton(
-    value: Int,
-    onValueChange : (Int) -> Unit,
-    selectedValue : Int
-) {
-    Button (
-        onClick = { onValueChange(value) },
-        Modifier
-            .size(72.dp)
-            .padding(4.dp),
-        shape = CircleShape,
-        border = BorderStroke(2.dp,
-            if(value == selectedValue) UrielOrange else UrielBorderGray),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = UrielBGPaleWhite,
-            contentColor = if(value == selectedValue) UrielOrange else UrielBorderGray),
-        contentPadding = PaddingValues(0.dp)
-    ) { Text(
-        text = value.toString(),
-        fontSize = 20.sp,
-    ) }
 }
 
 
