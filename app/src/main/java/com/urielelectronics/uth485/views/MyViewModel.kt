@@ -96,11 +96,11 @@ class MyViewModel: ViewModel() {
         Device(5, "105호", 3, error = true, connectionError = true),
         Device(6, "106호", 1),
         Device(7, "107호", 3),
-        Device(8, "108호", 2),
+        Device(8, "108호", 2, mode = SettingMode.TimeModeSetting),
         Device(9, "109호", 2, error = true),
         Device(10, "110호", 1),
         Device(11, "111호", 3, connectionError = true),
-        Device(12, "112호", 1),
+        Device(12, "112호", 1, mode = SettingMode.TimeModeSetting),
         Device(13, "113호", 3),
     )
     var deviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
