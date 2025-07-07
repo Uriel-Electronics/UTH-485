@@ -91,7 +91,7 @@ fun DeviceTimeSettingView (
 
                     HorizontalDivider(color = UrielBorderGray,
                         modifier = Modifier
-                            .fillMaxWidth(0.66f)
+                            .fillMaxWidth(0.65f)
                             .height(2.dp))
                     WeekBlock(
                         week = day,
