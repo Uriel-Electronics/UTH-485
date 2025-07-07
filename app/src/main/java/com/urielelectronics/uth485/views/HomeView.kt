@@ -260,12 +260,10 @@ fun HomeView(viewModel: MyViewModel) {
         GlobalTempSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_STATUS) {
-//        DeviceStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        StatusCheckView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_ERROR_STATUS) {
-//        DeviceErrorStatusView(viewState = viewState)
-        DeviceRegisterView(viewState = viewState, viewModel = viewModel)
+        ErrorMessageView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_PW_SETTING) {
         PasswordSettingView(viewState = viewState, viewModel = viewModel)
