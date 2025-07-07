@@ -27,8 +27,7 @@ fun GlobalTempSettingView (
     viewModel: MyViewModel
 ) {
 
-    var globalDevice by remember { mutableStateOf<Device>(
-        Device(0,"",0,viewModel.currentTemp,false,false)) }
+    var globalDevice by remember { mutableStateOf<Device>(viewModel.globalDevice) }
 
     Scaffold (
         topBar = {
@@ -83,13 +82,13 @@ fun GlobalTempSettingView (
                                         }
                                     }
                                     "powerOn" -> {
-                                        if (!oldDevice.isLocked) {
-                                            viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
-                                        }
+                                        viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
+
                                     }
                                 }
                             }
                             globalDevice = newDevice
+                            viewModel.updateGlobalDevice(newDevice)
                         },
                         type = "global"
                     )

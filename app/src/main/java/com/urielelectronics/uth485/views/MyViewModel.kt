@@ -106,12 +106,40 @@ class MyViewModel: ViewModel() {
     var deviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
         addAll(initialDeviceList)
     }
+    val initialGroupList = listOf<Device>(
+        Device(0, "group_1", 1),
+        Device(0, "group_2", 2),
+        Device(0, "group_3", 3),
+    )
+    var groupDeviceList = mutableStateListOf<Device>().apply { // 단말기 리스트
+        addAll(initialGroupList)
+    }
+    var globalDevice = Device(0, "global_device", 0)
     fun updateDeviceList(newDeviceList : List<Device>) { // 단말기 리스트 전체 업데이트 메서드
         deviceList.clear()
         deviceList.addAll(newDeviceList)
     }
+    fun updateDeviceGroup(groupCount : Int) {
+        val oldGroupList = groupDeviceList
+        groupDeviceList.clear()
+        repeat(groupCount) { i ->
+            // oldList 에 i 인덱스가 있으면 그 값을, 없으면 빈 Device()를
+            val element = oldGroupList.getOrNull(i) ?: Device(
+                id = 0,
+                name = "group_${i+1}",
+                group = i+1,
+            )
+            groupDeviceList.add(element)
+        }
+    }
     fun updateDeviceAt(index : Int, newDevice : Device) { // 단말기 업데이트 메서드
         deviceList[index] = newDevice
+    }
+    fun updateGroupDevice(groupId : Int, newGroupDevice : Device) {
+        groupDeviceList[groupId - 1] = newGroupDevice
+    }
+    fun updateGlobalDevice(newGlobalDevice : Device) {
+        globalDevice = newGlobalDevice
     }
     var currentTemp by mutableStateOf(28) // 현재 온도
     // --- TODO ---

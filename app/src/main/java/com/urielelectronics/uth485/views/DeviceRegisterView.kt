@@ -199,6 +199,7 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                                 viewModel.groupCount = groupCount
 
                                 viewModel.updateDeviceList(devices)
+                                viewModel.updateDeviceGroup(groupCount)
                                 // TODO
 
                                 showSavePopUp.value = true

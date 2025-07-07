@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -37,8 +38,12 @@ fun GroupTempSettingView (
 ) {
     var currGroup by remember { mutableIntStateOf(if(viewModel.groupCount > 0) 1 else 0) }
     var groupDevice by remember { mutableStateOf<Device>(
-        Device(0,"",currGroup,viewModel.currentTemp,false,false)
+        viewModel.groupDeviceList[currGroup - 1]
     ) }
+
+    LaunchedEffect(currGroup) {
+        groupDevice = viewModel.groupDeviceList[currGroup - 1]
+    }
 
     if (viewState.value == ViewState.DEVICE_TIME_GROUP_SETTING) {
         DeviceTimeSettingView(viewState, viewModel, type = "group", currGroup)
@@ -121,14 +126,13 @@ fun GroupTempSettingView (
                                                 }
                                             }
                                             "powerOn" -> {
-                                                if (!oldDevice.isLocked) {
-                                                    viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
-                                                }
+                                                viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
                                             }
                                         }
                                     }
                                 }
                                 groupDevice = newDevice
+                                viewModel.updateGroupDevice(currGroup, newDevice)
                             },
                             type = "group"
                         )
