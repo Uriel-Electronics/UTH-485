@@ -170,7 +170,7 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                             )
                         }
 
-                        Table(
+                        DeviceTable(
                             headers = listOf("단말기번호", "이름", "그룹분류"),
                             rows = devices,
                             weights = listOf(
@@ -199,6 +199,7 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                                 viewModel.groupCount = groupCount
 
                                 viewModel.updateDeviceList(devices)
+                                viewModel.updateDeviceGroup(groupCount)
                                 // TODO
 
                                 showSavePopUp.value = true
@@ -266,7 +267,7 @@ fun IconAndText(text : String) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Table(
+fun DeviceTable(
     headers: List<String>,
     rows: List<Device>,
     weights: List<Float>,

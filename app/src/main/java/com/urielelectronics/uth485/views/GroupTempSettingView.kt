@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -37,10 +38,15 @@ fun GroupTempSettingView (
 ) {
     var currGroup by remember { mutableIntStateOf(if(viewModel.groupCount > 0) 1 else 0) }
     var groupDevice by remember { mutableStateOf<Device>(
-        Device(0,"",currGroup,viewModel.currentTemp,false,false)) }
+        viewModel.groupDeviceList[currGroup - 1]
+    ) }
 
-    if (viewState.value == ViewState.DEVICE_TIME_SETTING) {
-        DeviceTimeSettingView(viewState, viewModel, currGroup)
+    LaunchedEffect(currGroup) {
+        groupDevice = viewModel.groupDeviceList[currGroup - 1]
+    }
+
+    if (viewState.value == ViewState.DEVICE_TIME_GROUP_SETTING) {
+        DeviceTimeSettingView(viewState, viewModel, type = "group", currGroup)
     }
     else {
 
@@ -74,7 +80,7 @@ fun GroupTempSettingView (
                             .padding(vertical = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically) {
-                        TemperatureGauge("설정 온도", groupDevice.settingTemp)
+                        TemperatureGauge("설정 온도", groupDevice.settingTemp, viewModel = viewModel)
                         Column(
                             Modifier
                                 .fillMaxHeight()
@@ -102,6 +108,7 @@ fun GroupTempSettingView (
                     ){
                         ControlFooter (
                             viewState = viewState,
+                            viewModel = viewModel,
                             device = groupDevice,
                             onDeviceChange = { newDevice, changedProp ->
                                 for(i in 0..viewModel.deviceNumber-1) {
@@ -120,16 +127,15 @@ fun GroupTempSettingView (
                                                 }
                                             }
                                             "powerOn" -> {
-                                                if (!oldDevice.isLocked) {
-                                                    viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
-                                                }
+                                                viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
                                             }
                                         }
                                     }
                                 }
                                 groupDevice = newDevice
+                                viewModel.updateGroupDevice(currGroup, newDevice)
                             },
-                            controlList = listOf<String>("온도 내림", "온도 올림", "잠금", "전원", "시간 설정")
+                            type = "group"
                         )
 
                     }

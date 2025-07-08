@@ -35,12 +35,14 @@ import com.urielelectronics.uth485.ui.theme.UrielGradientLightOrange
 import com.urielelectronics.uth485.ui.theme.UrielIconGray
 import com.urielelectronics.uth485.ui.theme.UrielOrange
 import com.urielelectronics.uth485.ui.theme.UrielTableHeaderGray
+import com.urielelectronics.uth485.views.MyViewModel
 
 @Composable
 fun TemperatureGauge (
     title : String,
     value : Int,
-    size : Dp = 320.dp
+    size : Dp = 320.dp,
+    viewModel : MyViewModel
 ) {
 
     Box(
@@ -55,7 +57,7 @@ fun TemperatureGauge (
             .padding(sweepWidth / 2)
             .graphicsLayer( rotationZ =  -90f )) {
 
-            val maxValue = 40 // 다이얼 게이지의 최댓값
+            val maxValue = viewModel.V_H // 다이얼 게이지의 최댓값 = 기본값 설정의 V_H (최고온도)
             val sweepAngle = (value.toFloat() / maxValue).coerceIn(0f,1f) * 360f
             val gradientGauge = Brush.sweepGradient(
                 colorStops = arrayOf(
