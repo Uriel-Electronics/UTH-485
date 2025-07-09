@@ -121,8 +121,6 @@ fun LandingView(viewState : MutableState<ViewState>, viewModel: MyViewModel) {
             viewState
         )
 
-
-
         // 시간 계산
         val nowFlow = remember {
             flow {
@@ -151,6 +149,24 @@ fun LandingView(viewState : MutableState<ViewState>, viewModel: MyViewModel) {
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(text = "연결된 단말기 수 : ${viewModel.deviceNumber}개",
+                color = UrielTextDark,
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp))
+            VerticalDivider(
+                color = UrielTextGray,
+                modifier = Modifier
+                    .height(20.dp)
+                    .padding(vertical = 4.dp, horizontal = 16.dp))
+
+            Text(text = "Max ID: ${viewModel.maxIdx}",
+                color = UrielTextDark,
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp))
+            VerticalDivider(
+                color = UrielTextGray,
+                modifier = Modifier
+                    .height(20.dp)
+                    .padding(vertical = 4.dp, horizontal = 16.dp))
+
             Text(text = dateText,
                 color = UrielTextDark,
                 modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp))

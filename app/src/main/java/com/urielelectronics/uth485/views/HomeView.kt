@@ -162,7 +162,7 @@ fun HomeView(viewModel: MyViewModel) {
         GroupTempSettingView(viewState = viewState, viewModel = viewModel)
     }
     else if (viewState.value == ViewState.DEVICE_TEMP_GLOBAL_SETTING) {
-        GlobalTempSettingView(viewState = viewState, viewModel = viewModel)
+        GlobalTempSettingView(gatt, characteristic, viewState = viewState, viewModel = viewModel)
     }
     else if(viewState.value == ViewState.DEVICE_TIME_GLOBAL_SETTING) {
         DeviceTimeSettingView(viewState, viewModel, type = "global", 0)

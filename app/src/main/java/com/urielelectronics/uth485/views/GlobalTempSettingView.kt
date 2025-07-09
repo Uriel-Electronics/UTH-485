@@ -1,5 +1,8 @@
 package com.urielelectronics.uth485.views
 
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +26,8 @@ import com.urielelectronics.uth485.views.components.TemperatureGauge
 
 @Composable
 fun GlobalTempSettingView (
+    selectedGatt: MutableState<BluetoothGatt?>,
+    selectedCharacteristic: MutableState<BluetoothGattCharacteristic?>,
     viewState: MutableState<ViewState>,
     viewModel: MyViewModel
 ) {
@@ -47,47 +52,75 @@ fun GlobalTempSettingView (
                 .background(UrielBGBeige),
             contentAlignment = Alignment.Center
         ) {
-            Column (
+            Column(
                 Modifier.fillMaxSize()
             ) {
-                Box (Modifier
-                    .weight(2f)
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                    contentAlignment = Alignment.Center)
+                Box(
+                    Modifier
+                        .weight(2f)
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    contentAlignment = Alignment.Center
+                )
                 {
                     TemperatureGauge("설정 온도", globalDevice.settingTemp, viewModel = viewModel)
                 }
-                Box (
+                Box(
                     Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                ){
-                    ControlFooter (
+                ) {
+                    ControlFooter(
                         viewState = viewState,
                         viewModel = viewModel,
                         device = globalDevice,
                         onDeviceChange = { newDevice, changedProp ->
-                            for(i in 0..viewModel.deviceNumber-1) {
-                                val oldDevice = viewModel.deviceList[i]
+//                            for (i in 0..viewModel.deviceNumber - 1) {
+//                                val oldDevice = viewModel.deviceList[i]
                                 when (changedProp) {
                                     "settingTemp" -> {
-                                        if(!oldDevice.isLocked) {
-                                            viewModel.updateDeviceAt(i, oldDevice.copy(settingTemp = newDevice.settingTemp))
-                                        }
+//                                        if (!oldDevice.isLocked) {
+//                                            viewModel.updateDeviceAt(
+//                                                i,
+//                                                oldDevice.copy(settingTemp = newDevice.settingTemp)
+//                                            )
+//                                        }
                                     }
-                                    "isLocked" -> {
-                                        if ((oldDevice.isLocked && !newDevice.isLocked) // 잠금 되어있는 단말기에 대해 잠금을 해제했을 떄
-                                            || (!oldDevice.isLocked && newDevice.isLocked)) { // 잠금되어있지 않은 단말기들에 대해 잠금을 걸 때
-                                            viewModel.updateDeviceAt(i, oldDevice.copy(isLocked = newDevice.isLocked))
-                                        }
-                                    }
-                                    "powerOn" -> {
-                                        viewModel.updateDeviceAt(i, oldDevice.copy(powerOn = newDevice.powerOn))
 
+                                    "isLocked" -> {
+//                                        if ((oldDevice.isLocked && !newDevice.isLocked) // 잠금 되어있는 단말기에 대해 잠금을 해제했을 떄
+//                                            || (!oldDevice.isLocked && newDevice.isLocked)
+//                                        ) { // 잠금되어있지 않은 단말기들에 대해 잠금을 걸 때
+//                                            viewModel.updateDeviceAt(
+//                                                i,
+//                                                oldDevice.copy(isLocked = newDevice.isLocked)
+//                                            )
+//                                        }
+                                        sendGlobalPowerOffData(
+                                            selectedGatt.value!!,
+                                            selectedCharacteristic.value!!
+                                        )
                                     }
+
+                                    "powerOn" -> {
+//                                        viewModel.updateDeviceAt(
+//                                            i,
+//                                            oldDevice.copy(powerOn = newDevice.powerOn)
+//                                        )
+                                        sendGlobalPowerOnData(
+                                            selectedGatt.value!!,
+                                            selectedCharacteristic.value!!
+                                        )
+                                    }
+
+//                                    "powerOff" -> {
+//                                        viewModel.updateDeviceAt(
+//                                            i,
+//                                            oldDevice.copy(powerOff = )
+//                                        )
+//                                    }
                                 }
-                            }
+//                            }
                             globalDevice = newDevice
                             viewModel.updateGlobalDevice(newDevice)
                         },
@@ -97,4 +130,22 @@ fun GlobalTempSettingView (
             }
         }
     }
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
+fun sendGlobalPowerOnData(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+    val CHECKSUM: UByte = (175 + 20 + 1).toUByte()
+    val packet: UByteArray = ubyteArrayOf(175u, 20u, 0u,1u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM, 13u, 10u)
+
+    sendPacket(gatt, characteristic, packet)
+    Log.d("Global Power ON", packet.contentToString())
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
+fun sendGlobalPowerOffData(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+    val CHECKSUM: UByte = (175 + 20).toUByte()
+    val packet: UByteArray = ubyteArrayOf(175u, 20u, 0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, CHECKSUM, 13u, 10u)
+
+    sendPacket(gatt, characteristic, packet)
+    Log.d("Global Power OFF", packet.contentToString())
 }

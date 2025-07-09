@@ -95,7 +95,7 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
 
     var intervalTime = remember { mutableStateOf(viewModel.intervalTime.toString())} // 시간주기
     var fisrtTime = remember { mutableStateOf(viewModel.fisrtTime.toString())} // 초기투입시간
-    var step = remember { mutableIntStateOf(viewModel.step)} // 시간단계
+    var step = remember { mutableIntStateOf(viewModel.timeStep)} // 시간단계
 
     var tempErrMsgOn = remember { mutableStateOf<Boolean>(viewModel.tempErrMsgOn) }
     var tempErrMsgFrequency = remember { mutableIntStateOf(viewModel.tempErrMsgFrequency) }
@@ -430,7 +430,7 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                 viewModel.ES = ES.value.toInt()
                                 viewModel.intervalTime = intervalTime.value.toInt()
                                 viewModel.fisrtTime = fisrtTime.value.toInt()
-                                viewModel.step = step.value.toInt()
+                                viewModel.timeStep = step.value.toInt()
 
                                 viewModel.tempErrMsgOn = tempErrMsgOn.value
                                 viewModel.tempErrMsgFrequency = tempErrMsgFrequency.value

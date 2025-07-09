@@ -87,10 +87,6 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
     var gridList = deviceList.padToTen()
     var selectedDeviceId by remember {mutableStateOf<Int>(0)}
 
-
-
-
-
     if (viewState.value == ViewState.DEVICE_TEMP_DEVICE_SETTING || viewState.value == ViewState.DEVICE_TIME_SETTING) {
         DeviceTempSettingView(viewState, viewModel, selectedDeviceId)
     }

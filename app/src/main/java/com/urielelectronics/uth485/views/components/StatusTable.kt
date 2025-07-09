@@ -61,7 +61,7 @@ fun Table(
         if (device.mode == SettingMode.TempModeSetting)
             if (!device.error && !device.connectionError) "${device.settingTemp}°C"
             else "0°C" // TODO - 단말기 에러 / 통신 에러 둘중 하나만 걸려도 0도씨로 표현?
-        else "${viewModel.step}단계", // TODO - 시간 단계는 모든 단말기에 대해 동일?
+        else "${viewModel.timeStep}단계", // TODO - 시간 단계는 모든 단말기에 대해 동일?
         "${viewModel.currentTemp}°C",
         "${viewModel.intervalTime}분" // TODO - 시간주기는 기본값설정에서 정하는데 왜 단말기마다 다른 값?
     )
