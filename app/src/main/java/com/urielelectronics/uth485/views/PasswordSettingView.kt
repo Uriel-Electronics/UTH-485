@@ -127,10 +127,14 @@ fun PasswordSettingView(viewState: MutableState<ViewState>, viewModel: MyViewMod
                         SaveButton(
                             onButtonClick = {
                                 showSavePopUp.value = FAILURE
-                                if(newPassword == newPasswordCheck) {
-                                    // if (TODO - 조건 추가 (최소길이, 특수문자, 대소문자 등등))
-                                        showSavePopUp.value = SUCCESS
-                                        // TODO - user password 업데이트
+                                if(newPassword.length >= 4 &&
+                                    newPassword == newPasswordCheck) {
+                                    showSavePopUp.value = SUCCESS
+
+                                    /* TODO - user password 업데이트
+                                    val (pw1, pw2, pw3, pw4) = newPassword.map { it.digitToInt() }
+                                    viewModel.updatePassword(pw1, pw2, pw3, pw4)
+                                    */
                                 }
                             },
                             text = "저장",
@@ -208,7 +212,10 @@ fun PasswordInputField(
         }
         OutlinedTextField(
             value = password,
-            onValueChange = onPasswordChange,
+            onValueChange = { new ->
+                val filtered = new.filter { it.isDigit() }.take(4)
+                onPasswordChange(filtered)
+            },
             placeholder = { Text(title) },
             singleLine = true,
             textStyle = TextStyle(
