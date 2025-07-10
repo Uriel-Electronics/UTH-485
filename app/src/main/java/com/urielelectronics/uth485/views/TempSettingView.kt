@@ -186,14 +186,14 @@ fun TempSettingView (viewState: MutableState<ViewState>, viewModel: MyViewModel)
                     ) {
                         PageMoveButton(
                             page = page,
-                            maxPage = (deviceList.size / 10),
+                            maxPage = (if(deviceList.isEmpty()) deviceList.size / 10 else (deviceList.size - 1) / 10),
                             isLeft = true,
                             modifier = Modifier.weight(1f)
                         )
                         Spacer(Modifier.width(6.dp))
                         PageMoveButton(
                             page = page,
-                            maxPage = (deviceList.size / 10),
+                            maxPage = (if(deviceList.isEmpty()) deviceList.size / 10 else (deviceList.size - 1) / 10),
                             isLeft = false,
                             modifier = Modifier.weight(1f)
                         )

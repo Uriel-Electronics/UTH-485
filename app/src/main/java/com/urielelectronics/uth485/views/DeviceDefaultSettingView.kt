@@ -94,7 +94,7 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
     var ES = remember { mutableStateOf(viewModel.ES.toString())}// 보정온도
 
     var intervalTime = remember { mutableStateOf(viewModel.intervalTime.toString())} // 시간주기
-    var fisrtTime = remember { mutableStateOf(viewModel.fisrtTime.toString())} // 초기투입시간
+    var firstTime = remember { mutableStateOf(viewModel.firstTime.toString())} // 초기투입시간
     var step = remember { mutableIntStateOf(viewModel.timeStep)} // 시간단계
 
     var tempErrMsgOn = remember { mutableStateOf<Boolean>(viewModel.tempErrMsgOn) }
@@ -284,8 +284,8 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                                     {
                                         Box (Modifier.width(360.dp)) {
                                             ValueTextField(
-                                                value = fisrtTime.value,
-                                                onValueChange = { input -> onNumberChange(input, fisrtTime) },
+                                                value = firstTime.value,
+                                                onValueChange = { input -> onNumberChange(input, firstTime) },
                                                 unit = "초",
                                                 example = "예) 1~60초"
                                             )
@@ -422,15 +422,20 @@ fun DeviceDefaultSettingView(viewState: MutableState<ViewState>, viewModel: MyVi
                             // if (TODO - 조건 추가)
 
                                 showSavePopUp.value = SUCCESS
-                                viewModel.V_L = V_L.value.toInt()
-                                viewModel.V_H = V_H.value.toInt()
-                                viewModel.IF = IF.value.toInt()
-                                viewModel.LY = LY.value.toInt()
-                                viewModel.Ht = Ht.value.toInt()
-                                viewModel.ES = ES.value.toInt()
-                                viewModel.intervalTime = intervalTime.value.toInt()
-                                viewModel.fisrtTime = fisrtTime.value.toInt()
-                                viewModel.timeStep = step.value.toInt()
+
+                                viewModel.updateSettingData(
+                                    rN = rN.value.toInt(),
+                                    V_L = V_L.value.toInt(),
+                                    V_H = V_H.value.toInt(),
+                                    IF = IF.value.toInt(),
+                                    LY = LY.value.toInt(),
+                                    Ht = Ht.value.toInt(),
+                                    ES = ES.value.toInt(),
+                                    interval = intervalTime.value.toInt(),
+                                    firstTime = firstTime.value.toInt(),
+                                    settingTemp = viewModel.settingTemp,
+                                    timeStep = step.intValue
+                                )
 
                                 viewModel.tempErrMsgOn = tempErrMsgOn.value
                                 viewModel.tempErrMsgFrequency = tempErrMsgFrequency.value

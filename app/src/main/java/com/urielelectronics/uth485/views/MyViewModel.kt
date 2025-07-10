@@ -96,7 +96,7 @@ class MyViewModel: ViewModel() {
     var Ht by mutableStateOf(0) // 과승온도
     var ES by mutableStateOf(0) // 보정온도
     var intervalTime by mutableStateOf(0) // 시간주기
-    var fisrtTime by mutableStateOf(0) // 초기투입시간
+    var firstTime by mutableStateOf(0) // 초기투입시간
     var settingTemp by mutableStateOf(0) // 설정온도
     var timeStep by mutableStateOf(0) // 시간단계
 
@@ -111,7 +111,7 @@ class MyViewModel: ViewModel() {
         this.Ht = Ht
         this.ES = ES
         this.intervalTime = interval
-        this.fisrtTime = firstTime
+        this.firstTime = firstTime
         this.settingTemp = settingTemp
         this.timeStep = timeStep
     }
@@ -440,16 +440,16 @@ class MyViewModel: ViewModel() {
 
     var groupCount by mutableIntStateOf(0) // 그룹 수, 초기값 0
     val initialDeviceList = listOf<Device>(
-        Device(1, "101호", 1),
-        Device(2, "102호", 1),
-        Device(3, "103호", 2),
-        Device(4, "104호", 2),
-        Device(5, "105호", 3, error = true, connectionError = true),
-        Device(6, "106호", 1),
-        Device(7, "107호", 3),
-        Device(8, "108호", 2, mode = SettingMode.TimeModeSetting),
-        Device(9, "109호", 2, error = true),
-        Device(10, "110호", 1),
+//        Device(1, "101호", 1),
+//        Device(2, "102호", 1),
+//        Device(3, "103호", 2),
+//        Device(4, "104호", 2),
+//        Device(5, "105호", 3, error = true, connectionError = true),
+//        Device(6, "106호", 1),
+//        Device(7, "107호", 3),
+//        Device(8, "108호", 2, mode = SettingMode.TimeModeSetting),
+//        Device(9, "109호", 2, error = true),
+//        Device(10, "110호", 1),
 //        Device(11, "111호", 3, connectionError = true),
 //        Device(12, "112호", 1, mode = SettingMode.TimeModeSetting),
 //        Device(13, "113호", 3),
