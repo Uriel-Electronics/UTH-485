@@ -193,13 +193,12 @@ fun DeviceRegisterView(viewState: MutableState<ViewState>, viewModel: MyViewMode
                         // 2. 저장 버튼
                         SaveButton(
                             onButtonClick = {
-                                // TODO - viewModel.group, devices 업데이트
-                                viewModel.groupCount = groupCount
-
-                                viewModel.updateDeviceCount(deviceCount, deviceCount-1)
-                                viewModel.updateDeviceList(devices)
-                                viewModel.updateDeviceGroup(groupCount)
-                                // TODO
+                                /* TODO - viewModel.group, devices 업데이트
+                                viewModel.groupCount = groupCount // 그룹 수 업데이트
+                                viewModel.updateDeviceCount(deviceCount, deviceCount-1) // deviceNumber 업데이트
+                                viewModel.updateDeviceList(devices) // deviceList 업데이트
+                                viewModel.updateDeviceGroup(groupCount) // deviceGroupList 업데이트
+                                TODO */
 
                                 showSavePopUp.value = true
                             },
